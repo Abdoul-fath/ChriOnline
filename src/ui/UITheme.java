@@ -2,6 +2,7 @@ package ui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -26,10 +27,30 @@ public class UITheme {
     public static final Color SUCCESS = new Color(76, 175, 80);
     public static final Color INPUT_BG = new Color(58, 62, 74);
 
-    private static final String IMAGES_DIR = "image/";
-    private static final Map<String, ImageIcon> imageCache = new HashMap<>();
+    private static final String IMAGES_DIR = "image";
+    private static final Map<String, ImageIcon> imageCache = new HashMap<String, ImageIcon>();
 
     private UITheme() {
+    }
+
+    public static TitledBorder titledBorder(String title) {
+        TitledBorder border = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(BORDER),
+                title
+        );
+        border.setTitleColor(TEXT);
+        border.setTitleFont(normalFont());
+        return border;
+    }
+
+    public static TitledBorder titledBorder(String title, Font font) {
+        TitledBorder border = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(BORDER),
+                title
+        );
+        border.setTitleColor(TEXT);
+        border.setTitleFont(font);
+        return border;
     }
 
     private static ImageIcon createPlaceholderIcon(int width, int height) {
@@ -60,7 +81,6 @@ public class UITheme {
         }
 
         String normalizedPath = path.trim().replace("\\", "/");
-        String fileName = new File(normalizedPath).getName();
         String cacheKey = normalizedPath + "_" + width + "x" + height;
 
         if (imageCache.containsKey(cacheKey)) {
@@ -68,18 +88,9 @@ public class UITheme {
         }
 
         try {
-            File imageFile;
+            File imageFile = resolveImageFile(normalizedPath);
 
-            // 1. si le path exact existe, on l’utilise
-            File directFile = new File(normalizedPath);
-            if (directFile.exists()) {
-                imageFile = directFile;
-            } else {
-                // 2. sinon on tente avec image/ + nom du fichier
-                imageFile = new File(IMAGES_DIR + fileName);
-            }
-
-            if (!imageFile.exists()) {
+            if (imageFile == null || !imageFile.exists() || !imageFile.isFile()) {
                 ImageIcon placeholder = getScaledPlaceholder(width, height);
                 imageCache.put(cacheKey, placeholder);
                 return placeholder;
@@ -87,7 +98,6 @@ public class UITheme {
 
             ImageIcon icon = new ImageIcon(imageFile.getAbsolutePath());
 
-            // sécurité si l'image est invalide
             if (icon.getIconWidth() <= 0 || icon.getIconHeight() <= 0) {
                 ImageIcon placeholder = getScaledPlaceholder(width, height);
                 imageCache.put(cacheKey, placeholder);
@@ -96,6 +106,7 @@ public class UITheme {
 
             Image scaledImg = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
             ImageIcon scaledIcon = new ImageIcon(scaledImg);
+
             imageCache.put(cacheKey, scaledIcon);
             return scaledIcon;
 
@@ -105,6 +116,21 @@ public class UITheme {
             imageCache.put(cacheKey, placeholder);
             return placeholder;
         }
+    }
+
+    private static File resolveImageFile(String normalizedPath) {
+        File directFile = new File(normalizedPath);
+        if (directFile.exists() && directFile.isFile()) {
+            return directFile;
+        }
+
+        String fileName = new File(normalizedPath).getName();
+        File imageDirFile = new File(IMAGES_DIR, fileName);
+        if (imageDirFile.exists() && imageDirFile.isFile()) {
+            return imageDirFile;
+        }
+
+        return null;
     }
 
     private static ImageIcon getScaledPlaceholder(int width, int height) {
@@ -176,10 +202,7 @@ public class UITheme {
 
         JPanel fieldPanel = new JPanel(new BorderLayout());
         fieldPanel.setOpaque(false);
-        fieldPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(BORDER),
-                title
-        ));
+        fieldPanel.setBorder(titledBorder(title));
 
         fieldPanel.add(passwordField, BorderLayout.CENTER);
         fieldPanel.add(eyeLabel, BorderLayout.EAST);

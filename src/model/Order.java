@@ -14,6 +14,10 @@ public class Order {
     private LocalDateTime createdAt;
     private List<OrderItem> items;
     private Payment payment;
+    private int clientId;
+    private String clientNom;
+    private String clientPrenom;
+    private String clientEmail;
 
     public Order() {
         this.id = 0;
@@ -124,5 +128,42 @@ public class Order {
 
     public void cancelOrder() {
         this.status = "cancelled";
+    }
+    public int getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientNom() {
+        return clientNom;
+    }
+
+    public void setClientNom(String clientNom) {
+        this.clientNom = clientNom;
+    }
+
+    public String getClientPrenom() {
+        return clientPrenom;
+    }
+
+    public void setClientPrenom(String clientPrenom) {
+        this.clientPrenom = clientPrenom;
+    }
+
+    public String getClientEmail() {
+        return clientEmail;
+    }
+
+    public void setClientEmail(String clientEmail) {
+        this.clientEmail = clientEmail;
+    }
+
+    public String getClientFullName() {
+        String prenom = clientPrenom == null ? "" : clientPrenom;
+        String nom = clientNom == null ? "" : clientNom;
+        return (prenom + " " + nom).trim();
     }
 }

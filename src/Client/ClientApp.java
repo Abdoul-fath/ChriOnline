@@ -1,49 +1,39 @@
 package Client;
 
-import java.io.*;
-import java.net.Socket;
 import java.util.Scanner;
 
 public class ClientApp {
 
-    private static final String SERVER_HOST = "localhost";
-    private static final int SERVER_PORT = 5000; // ⚠️ même port que serveur
+    private final ClientSocketService clientService;
+    private final Scanner scanner;
+    private final AppSession session;
 
-    private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
-    private Scanner scanner;
+    public ClientApp() {
+        this.clientService = new ClientSocketService();
+        this.scanner = new Scanner(System.in);
+        this.session = new AppSession();
+    }
 
-    private String clientId; // important pour panier/commande
+    // =========================================================
+    // CONNECTION
+    // =========================================================
 
-    // ── CONNEXION ─────────────────────────────
     public boolean connectToServer() {
-        try {
-            socket = new Socket(SERVER_HOST, SERVER_PORT);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-            scanner = new Scanner(System.in);
+        boolean connected = clientService.connect();
 
-            System.out.println(in.readLine()); // message serveur
+        if (connected) {
+            System.out.println("✅ Connecté au serveur.");
             return true;
-
-        } catch (Exception e) {
-            System.out.println("Erreur connexion : " + e.getMessage());
+        } else {
+            System.out.println("❌ Impossible de se connecter au serveur.");
             return false;
         }
     }
 
-    // ── COMMUNICATION ─────────────────────────
-    private String sendRequest(String request) {
-        try {
-            out.println(request);
-            return in.readLine();
-        } catch (Exception e) {
-            return "ERROR:COMMUNICATION";
-        }
-    }
+    // =========================================================
+    // MAIN MENU
+    // =========================================================
 
-    // ── MENU PRINCIPAL ────────────────────────
     public void showMainMenu() {
         while (true) {
             System.out.println("\n=== MENU PRINCIPAL ===");
@@ -52,7 +42,7 @@ public class ClientApp {
             System.out.println("0. Quitter");
             System.out.print("Choix : ");
 
-            String choix = scanner.nextLine();
+            String choix = scanner.nextLine().trim();
 
             switch (choix) {
                 case "1" -> handleLogin();
@@ -66,7 +56,10 @@ public class ClientApp {
         }
     }
 
-    // ── LOGIN ────────────────────────────────
+    // =========================================================
+    // LOGIN / REGISTER
+    // =========================================================
+
     private void handleLogin() {
         System.out.print("Email : ");
         String email = scanner.nextLine();
@@ -74,32 +67,46 @@ public class ClientApp {
         System.out.print("Mot de passe : ");
         String password = scanner.nextLine();
 
-        String response = sendRequest("LOGIN:" + email + ":" + password);
+        String response = clientService.login(email, password);
 
-        if (response != null && response.startsWith("LOGIN_SUCCESS")) {
+        if (response != null && response.startsWith("LOGIN_SUCCESS:")) {
             String[] parts = response.split(":");
-            clientId = parts[1];
+            if (parts.length >= 3) {
+                int userId = Integer.parseInt(parts[1]);
+                String role = parts[2];
 
-            System.out.println("Connexion réussie !");
-            showClientMenu();
+                session.setUserId(userId);
+                session.setRole(role);
 
+                System.out.println("✅ Connexion réussie. Rôle = " + role);
+
+                if (session.isAdmin()) {
+                    showAdminMenu();
+                } else {
+                    showClientMenu();
+                }
+            } else {
+                System.out.println("❌ Réponse login invalide.");
+            }
+
+        } else if ("ERROR:ACCOUNT_NOT_ACTIVE".equals(response)) {
+            System.out.println("⚠️ Compte non activé.");
         } else {
-            System.out.println("Login échoué !");
+            System.out.println("❌ Login échoué : " + response);
         }
     }
 
-    // ── REGISTER ─────────────────────────────
     private void handleRegister() {
         System.out.print("Nom : ");
         String nom = scanner.nextLine();
 
-        System.out.print("Prenom : ");
+        System.out.print("Prénom : ");
         String prenom = scanner.nextLine();
 
         System.out.print("Email : ");
         String email = scanner.nextLine();
 
-        System.out.print("Password : ");
+        System.out.print("Mot de passe : ");
         String password = scanner.nextLine();
 
         System.out.print("Adresse : ");
@@ -111,13 +118,14 @@ public class ClientApp {
         System.out.print("Ville : ");
         String ville = scanner.nextLine();
 
-        String response = sendRequest("REGISTER:" + nom + ":" + prenom + ":" +
-                email + ":" + password + ":" + address + ":" + phone + ":" + ville);
-
-        System.out.println(response);
+        String response = clientService.register(nom, prenom, email, password, address, phone, ville);
+        System.out.println("Réponse serveur : " + response);
     }
 
-    // ── MENU CLIENT ──────────────────────────
+    // =========================================================
+    // CLIENT MENU
+    // =========================================================
+
     private void showClientMenu() {
         while (true) {
             System.out.println("\n=== MENU CLIENT ===");
@@ -126,10 +134,11 @@ public class ClientApp {
             System.out.println("3. Panier");
             System.out.println("4. Checkout");
             System.out.println("5. Paiement");
+            System.out.println("6. Voir profil");
             System.out.println("0. Logout");
             System.out.print("Choix : ");
 
-            String choix = scanner.nextLine();
+            String choix = scanner.nextLine().trim();
 
             switch (choix) {
                 case "1" -> getProducts();
@@ -137,6 +146,92 @@ public class ClientApp {
                 case "3" -> menuPanier();
                 case "4" -> checkout();
                 case "5" -> payment();
+                case "6" -> getProfile();
+                case "0" -> {
+                    session.clearSession();
+                    return;
+                }
+                default -> System.out.println("Choix invalide !");
+            }
+        }
+    }
+
+    // =========================================================
+    // ADMIN MENU
+    // =========================================================
+
+    private void showAdminMenu() {
+        while (true) {
+            System.out.println("\n=== MENU ADMIN ===");
+            System.out.println("1. Dashboard summary");
+            System.out.println("2. Voir produits");
+            System.out.println("3. Voir catégories");
+            System.out.println("4. Voir utilisateurs");
+            System.out.println("5. Voir commandes");
+            System.out.println("6. Voir notifications");
+            System.out.println("7. Voir alertes stock");
+            System.out.println("8. Voir historique stock");
+            System.out.println("0. Logout");
+            System.out.print("Choix : ");
+
+            String choix = scanner.nextLine().trim();
+
+            switch (choix) {
+                case "1" -> adminGetDashboardSummary();
+                case "2" -> getProducts();
+                case "3" -> adminGetCategories();
+                case "4" -> adminGetUsers();
+                case "5" -> adminGetOrders();
+                case "6" -> adminGetNotifications();
+                case "7" -> adminGetStockAlerts();
+                case "8" -> adminGetStockHistory();
+                case "0" -> {
+                    session.clearSession();
+                    return;
+                }
+                default -> System.out.println("Choix invalide !");
+            }
+        }
+    }
+
+    // =========================================================
+    // PRODUCTS
+    // =========================================================
+
+    private void getProducts() {
+        String response = clientService.getProducts();
+        System.out.println(response);
+    }
+
+    private void getProductDetail() {
+        System.out.print("ID produit : ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        String response = clientService.getProduct(id);
+        System.out.println(response);
+    }
+
+    // =========================================================
+    // CART
+    // =========================================================
+
+    private void menuPanier() {
+        while (true) {
+            System.out.println("\n=== PANIER ===");
+            System.out.println("1. Ajouter");
+            System.out.println("2. Supprimer");
+            System.out.println("3. Voir panier");
+            System.out.println("4. Vider panier");
+            System.out.println("0. Retour");
+            System.out.print("Choix : ");
+
+            String choix = scanner.nextLine().trim();
+
+            switch (choix) {
+                case "1" -> addToCart();
+                case "2" -> removeFromCart();
+                case "3" -> getCart();
+                case "4" -> clearCart();
                 case "0" -> {
                     return;
                 }
@@ -145,93 +240,142 @@ public class ClientApp {
         }
     }
 
-    // ── PRODUITS ─────────────────────────────
-    private void getProducts() {
-        String response = sendRequest("GET_PRODUCTS");
-        System.out.println(response);
-    }
-
-    private void getProductDetail() {
-        System.out.print("ID produit : ");
-        String id = scanner.nextLine();
-
-        String response = sendRequest("GET_PRODUCT:" + id);
-        System.out.println(response);
-    }
-
-    // ── PANIER ───────────────────────────────
-    private void menuPanier() {
-        while (true) {
-            System.out.println("\n=== PANIER ===");
-            System.out.println("1. Ajouter");
-            System.out.println("2. Supprimer");
-            System.out.println("3. Voir panier");
-            System.out.println("0. Retour");
-
-            String choix = scanner.nextLine();
-
-            switch (choix) {
-                case "1" -> addToCart();
-                case "2" -> removeFromCart();
-                case "3" -> getCart();
-                case "0" -> { return; }
-            }
-        }
-    }
-
     private void addToCart() {
         System.out.print("ID produit : ");
-        String productId = scanner.nextLine();
+        int productId = Integer.parseInt(scanner.nextLine());
 
         System.out.print("Quantité : ");
-        String qty = scanner.nextLine();
+        int qty = Integer.parseInt(scanner.nextLine());
 
-        String response = sendRequest("CART_ADD:" + clientId + ":" + productId + ":" + qty);
+        String response = clientService.addToCart(session.getClientId(), productId, qty);
         System.out.println(response);
     }
 
     private void removeFromCart() {
         System.out.print("ID produit : ");
-        String productId = scanner.nextLine();
+        int productId = Integer.parseInt(scanner.nextLine());
 
-        String response = sendRequest("CART_REMOVE:" + clientId + ":" + productId);
+        String response = clientService.removeFromCart(session.getClientId(), productId);
         System.out.println(response);
     }
 
     private void getCart() {
-        String response = sendRequest("CART_GET:" + clientId);
+        String response = clientService.getCart(session.getClientId());
         System.out.println(response);
     }
 
-    // ── CHECKOUT ─────────────────────────────
+    private void clearCart() {
+        String response = clientService.clearCart(session.getClientId());
+        System.out.println(response);
+    }
+
+    // =========================================================
+    // CHECKOUT / PAYMENT
+    // =========================================================
+
     private void checkout() {
-        String response = sendRequest("CHECKOUT:" + clientId);
+        String response = clientService.checkout(session.getClientId());
         System.out.println(response);
+
+        if (response != null && response.startsWith("ORDER_CREATED;")) {
+            String[] parts = response.split(";");
+            if (parts.length >= 3) {
+                session.setOrderUUID(parts[1]);
+                session.setLastOrderTotal(parseDouble(parts[2]));
+            }
+        }
     }
 
-    // ── PAYMENT ──────────────────────────────
     private void payment() {
-        System.out.print("UUID commande : ");
-        String uuid = scanner.nextLine();
+        String uuid = session.getOrderUUID();
+
+        if (uuid == null || uuid.isBlank()) {
+            System.out.print("UUID commande : ");
+            uuid = scanner.nextLine();
+        } else {
+            System.out.println("UUID commande détecté : " + uuid);
+        }
 
         System.out.print("Méthode (card/especes) : ");
         String method = scanner.nextLine();
 
-        String response = sendRequest("PAYMENT:" + uuid + ":" + method);
+        String response = clientService.pay(uuid, method);
         System.out.println(response);
     }
 
-    // ── FERMETURE ────────────────────────────
-    private void closeConnection() {
+    // =========================================================
+    // PROFILE
+    // =========================================================
+
+    private void getProfile() {
+        String response = clientService.getProfile(session.getUserId());
+        System.out.println(response);
+    }
+
+    // =========================================================
+    // ADMIN QUICK ACTIONS
+    // =========================================================
+
+    private void adminGetDashboardSummary() {
+        String response = clientService.adminGetDashboardSummary();
+        System.out.println(response);
+    }
+
+    private void adminGetCategories() {
+        String response = clientService.adminGetCategories();
+        System.out.println(response);
+    }
+
+    private void adminGetUsers() {
+        String response = clientService.adminGetUsers();
+        System.out.println(response);
+    }
+
+    private void adminGetOrders() {
+        String response = clientService.adminGetOrders();
+        System.out.println(response);
+    }
+
+    private void adminGetNotifications() {
+        String response = clientService.adminGetNotifications();
+        System.out.println(response);
+    }
+
+    private void adminGetStockAlerts() {
+        String response = clientService.adminGetStockAlerts();
+        System.out.println(response);
+    }
+
+    private void adminGetStockHistory() {
+        String response = clientService.adminGetStockHistory();
+        System.out.println(response);
+    }
+
+    // =========================================================
+    // HELPERS
+    // =========================================================
+
+    private double parseDouble(String value) {
         try {
-            socket.close();
-            scanner.close();
+            return Double.parseDouble(value);
         } catch (Exception e) {
-            System.out.println("Erreur fermeture");
+            return 0.0;
         }
     }
 
-    // ── MAIN ─────────────────────────────────
+    private void closeConnection() {
+        try {
+            clientService.close();
+            scanner.close();
+        } catch (Exception e) {
+            System.out.println("Erreur fermeture.");
+        }
+    }
+
+    // =========================================================
+    // MAIN
+    // =========================================================
+
     public static void main(String[] args) {
         ClientApp client = new ClientApp();
 

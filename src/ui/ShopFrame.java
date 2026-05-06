@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,13 +27,13 @@ public class ShopFrame extends LanguageAwareFrame {
     private JButton cartBtn;
     private JButton logoutBtn;
     private JButton languageBtn;
-    private JButton adminBtn;
     private JButton profileBtn;
     private JLabel logo;
     private JLabel resultLabel;
     private JButton searchBtn;
 
     private final List<String[]> allProducts = new ArrayList<>();
+    private final List<String> allCategories = new ArrayList<>();
     private String currentCategory = "Tous";
 
     public ShopFrame(ClientSocketService clientService, AppSession session) {
@@ -49,7 +49,7 @@ public class ShopFrame extends LanguageAwareFrame {
             }
         });
 
-        loadProducts();
+        loadAllData();
         refreshCartCount();
     }
 
@@ -92,6 +92,17 @@ public class ShopFrame extends LanguageAwareFrame {
         }
     }
 
+    private String getDisplayName() {
+        String fullName = session.getFullName();
+
+        if (fullName == null || fullName.isBlank()) {
+            return "Utilisateur";
+        }
+
+        String[] parts = fullName.trim().split("\\s+");
+        return parts.length > 0 ? parts[0] : fullName.trim();
+    }
+
     private JPanel createTopBar() {
         JPanel topBar = new JPanel(new BorderLayout(15, 0));
         topBar.setBackground(new Color(35, 38, 46));
@@ -132,8 +143,7 @@ public class ShopFrame extends LanguageAwareFrame {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         rightPanel.setBackground(new Color(35, 38, 46));
 
-        String welcomeText = LanguageManager.getInstance().getText("shop.welcome")
-                + (isAdmin() ? ", admin #" : " #") + session.getClientId();
+        String welcomeText = LanguageManager.getInstance().getText("shop.welcome") + ", " + getDisplayName();
 
         welcomeLabel = new JLabel(welcomeText);
         welcomeLabel.setForeground(Color.WHITE);
@@ -155,11 +165,10 @@ public class ShopFrame extends LanguageAwareFrame {
         profileBtn = new JButton("👤 " + LanguageManager.getInstance().getText("profile.title"));
         styleTopButton(profileBtn, new Color(35, 38, 46), Color.WHITE);
 
-        adminBtn = new JButton("🛠 Admin Panel");
-        styleTopButton(adminBtn, UITheme.GOLD, new Color(35, 38, 46));
-
-        languageBtn = new JButton(LanguageManager.getCurrentLanguage().getFlag() + " " +
-                LanguageManager.getCurrentLanguage().getDisplayName());
+        languageBtn = new JButton(
+                LanguageManager.getCurrentLanguage().getFlag() + " " +
+                        LanguageManager.getCurrentLanguage().getDisplayName()
+        );
         styleTopButton(languageBtn, new Color(35, 38, 46), Color.WHITE);
 
         languageBtn.addActionListener(e -> {
@@ -180,27 +189,16 @@ public class ShopFrame extends LanguageAwareFrame {
             setVisible(false);
         });
 
-        if (isAdmin()) {
-            adminBtn.addActionListener(e -> new AdminDashboardFrame(clientService, session, this).setVisible(true));
-        }
-
         searchBtn.addActionListener(e -> filterProducts());
         searchField.addActionListener(e -> filterProducts());
 
-        categoriesBtn.addActionListener(e -> {
-            Set<String> uniqueCategories = new HashSet<>();
-            for (String[] p : allProducts) {
-                uniqueCategories.add(p[4]);
-            }
-
-            List<String> catList = new ArrayList<>(uniqueCategories);
-
-            new CategoriesFrame(catList, category -> {
-                currentCategory = category;
-                filterProducts();
-                refreshCategoryButtons();
-            }).setVisible(true);
-        });
+        categoriesBtn.addActionListener(e ->
+                new CategoriesFrame(new ArrayList<>(allCategories), category -> {
+                    currentCategory = category;
+                    filterProducts();
+                    refreshCategoryButtons();
+                }).setVisible(true)
+        );
 
         cartBtn.addActionListener(e -> {
             new CartFrame(clientService, session, this).setVisible(true);
@@ -223,11 +221,6 @@ public class ShopFrame extends LanguageAwareFrame {
 
         rightPanel.add(welcomeLabel);
         rightPanel.add(cartCountLabel);
-
-        if (isAdmin()) {
-            rightPanel.add(adminBtn);
-        }
-
         rightPanel.add(profileBtn);
         rightPanel.add(categoriesBtn);
         rightPanel.add(cartBtn);
@@ -314,7 +307,18 @@ public class ShopFrame extends LanguageAwareFrame {
     }
 
     public void reloadProducts() {
+        loadAllData();
+    }
+
+    public void reloadCategoriesAndProducts() {
+        loadAllData();
+    }
+
+    private void loadAllData() {
         loadProducts();
+        loadCategories();
+        buildCategoriesPanel(new LinkedHashSet<>(allCategories));
+        filterProducts();
     }
 
     private void loadProducts() {
@@ -329,7 +333,6 @@ public class ShopFrame extends LanguageAwareFrame {
         }
 
         String[] products = response.split("\\|");
-        Set<String> categories = new HashSet<>();
 
         for (String product : products) {
             String[] fields = product.split(";");
@@ -341,14 +344,33 @@ public class ShopFrame extends LanguageAwareFrame {
                 fullFields[3] = fields[3];
                 fullFields[4] = fields[4];
                 fullFields[5] = fields[5];
-
                 allProducts.add(fullFields);
-                categories.add(fullFields[4]);
             }
         }
+    }
 
-        buildCategoriesPanel(categories);
-        filterProducts();
+    private void loadCategories() {
+        allCategories.clear();
+
+        String response = clientService.getCategories();
+
+        if (response == null || response.startsWith("ERROR") || "NO_CATEGORIES".equals(response)) {
+            return;
+        }
+
+        String[] categories = response.split("\\|");
+        for (String category : categories) {
+            String[] fields = category.split(";");
+            if (fields.length >= 2) {
+                String name = fields[1].trim();
+                if (!name.isEmpty()
+                        && !name.equalsIgnoreCase("General")
+                        && !name.equalsIgnoreCase("Toutes")
+                        && !name.equalsIgnoreCase("Tous")) {
+                    allCategories.add(name);
+                }
+            }
+        }
     }
 
     private void buildCategoriesPanel(Set<String> categories) {
@@ -370,7 +392,7 @@ public class ShopFrame extends LanguageAwareFrame {
         sortedCategories.sort(String::compareToIgnoreCase);
 
         for (String category : sortedCategories) {
-            if (!category.equalsIgnoreCase("General") && !category.isBlank()) {
+            if (!category.isBlank()) {
                 JButton catBtn = createCategoryButton(getCategoryIcon(category) + " " + category, category);
                 catBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
                 catBtn.setMaximumSize(new Dimension(250, 38));
@@ -393,6 +415,7 @@ public class ShopFrame extends LanguageAwareFrame {
         if (catLower.contains("access")) return "🔌";
         if (catLower.contains("phone")) return "📱";
         if (catLower.contains("laptop")) return "💻";
+        if (catLower.contains("vetement")) return "👕";
         return "📦";
     }
 
@@ -557,16 +580,11 @@ public class ShopFrame extends LanguageAwareFrame {
         cartCountLabel.setText("🛒 (0)");
     }
 
-    private boolean isAdmin() {
-        return session != null && session.getRole() != null && session.getRole().equalsIgnoreCase("admin");
-    }
-
     @Override
     public void refreshTexts() {
         setTitle(LanguageManager.getInstance().getText("shop.title"));
 
-        String welcomeText = LanguageManager.getInstance().getText("shop.welcome")
-                + (isAdmin() ? ", admin #" : " #") + session.getClientId();
+        String welcomeText = LanguageManager.getInstance().getText("shop.welcome") + ", " + getDisplayName();
         welcomeLabel.setText(welcomeText);
 
         categoriesBtn.setText("📂 " + LanguageManager.getInstance().getText("shop.categories"));
@@ -574,17 +592,10 @@ public class ShopFrame extends LanguageAwareFrame {
         logoutBtn.setText(LanguageManager.getInstance().getText("shop.logout"));
         profileBtn.setText("👤 " + LanguageManager.getInstance().getText("profile.title"));
         searchBtn.setText(LanguageManager.getInstance().getText("shop.search"));
-        resultLabel.setText(LanguageManager.getInstance().getText("shop.all"));
         logo.setText("🏪 ChriOnline");
 
         applyOrientation();
-
-        Set<String> categories = new HashSet<>();
-        for (String[] p : allProducts) {
-            categories.add(p[4]);
-        }
-
-        buildCategoriesPanel(categories);
+        buildCategoriesPanel(new LinkedHashSet<>(allCategories));
         filterProducts();
 
         for (Component comp : productsContainer.getComponents()) {
@@ -597,4 +608,3 @@ public class ShopFrame extends LanguageAwareFrame {
         repaint();
     }
 }
- 

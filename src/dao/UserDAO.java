@@ -27,39 +27,31 @@ public class UserDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                String role = rs.getString("role");
-                String status = rs.getString("status");
-
-                if ("client".equalsIgnoreCase(role)) {
-                    Client client = new Client(
-                            rs.getString("nom"),
-                            rs.getString("prenom"),
-                            rs.getString("email"),
-                            rs.getString("password"),
-                            rs.getString("address"),
-                            rs.getString("phone"),
-                            rs.getString("ville")
-                    );
-                    client.setId(rs.getInt("id"));
-                    client.setRole(role);
-                    client.setStatus(status);
-                    return client;
-                } else {
-                    Admin admin = new Admin(
-                            rs.getString("nom"),
-                            rs.getString("prenom"),
-                            rs.getString("email"),
-                            rs.getString("password")
-                    );
-                    admin.setId(rs.getInt("id"));
-                    admin.setRole(role);
-                    admin.setStatus(status);
-                    return admin;
-                }
+                return mapUser(rs);
             }
 
         } catch (SQLException e) {
             System.out.println("Erreur findByEmail : " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public User findByEmailWithPublicKey(String email) {
+        String sql = "SELECT u.*, c.address, c.phone, c.ville " +
+                "FROM users u LEFT JOIN clients c ON u.id = c.id " +
+                "WHERE u.email = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return mapUser(rs);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur findByEmailWithPublicKey : " + e.getMessage());
         }
 
         return null;
@@ -168,35 +160,7 @@ public class UserDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String role = rs.getString("role");
-                String status = rs.getString("status");
-
-                if ("client".equalsIgnoreCase(role)) {
-                    Client client = new Client(
-                            rs.getString("nom"),
-                            rs.getString("prenom"),
-                            rs.getString("email"),
-                            rs.getString("password"),
-                            rs.getString("address"),
-                            rs.getString("phone"),
-                            rs.getString("ville")
-                    );
-                    client.setId(rs.getInt("id"));
-                    client.setRole(role);
-                    client.setStatus(status);
-                    users.add(client);
-                } else {
-                    Admin admin = new Admin(
-                            rs.getString("nom"),
-                            rs.getString("prenom"),
-                            rs.getString("email"),
-                            rs.getString("password")
-                    );
-                    admin.setId(rs.getInt("id"));
-                    admin.setRole(role);
-                    admin.setStatus(status);
-                    users.add(admin);
-                }
+                users.add(mapUser(rs));
             }
 
         } catch (SQLException e) {
@@ -216,35 +180,7 @@ public class UserDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                String role = rs.getString("role");
-                String status = rs.getString("status");
-
-                if ("client".equalsIgnoreCase(role)) {
-                    Client client = new Client(
-                            rs.getString("nom"),
-                            rs.getString("prenom"),
-                            rs.getString("email"),
-                            rs.getString("password"),
-                            rs.getString("address"),
-                            rs.getString("phone"),
-                            rs.getString("ville")
-                    );
-                    client.setId(rs.getInt("id"));
-                    client.setRole(role);
-                    client.setStatus(status);
-                    return client;
-                } else {
-                    Admin admin = new Admin(
-                            rs.getString("nom"),
-                            rs.getString("prenom"),
-                            rs.getString("email"),
-                            rs.getString("password")
-                    );
-                    admin.setId(rs.getInt("id"));
-                    admin.setRole(role);
-                    admin.setStatus(status);
-                    return admin;
-                }
+                return mapUser(rs);
             }
 
         } catch (SQLException e) {
@@ -252,6 +188,86 @@ public class UserDAO {
         }
 
         return null;
+    }
+
+    // =========================================================
+    // RSA PUBLIC KEY METHODS
+    // =========================================================
+
+    public boolean updatePublicKey(int userId, String publicKey) {
+        String sql = "UPDATE users SET public_key = ?, auth_type = 'rsa' WHERE id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, publicKey);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Erreur updatePublicKey : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public String getPublicKeyByEmail(String email) {
+        String sql = "SELECT public_key FROM users WHERE email = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("public_key");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur getPublicKeyByEmail : " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public boolean saveAdminChallenge(int userId, String challenge, java.util.Date expiresAt) {
+        String sql = "INSERT INTO admin_challenges (user_id, challenge_value, expires_at, used_flag, created_at) " +
+                "VALUES (?, ?, ?, 0, NOW())";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setString(2, challenge);
+            ps.setTimestamp(3, new Timestamp(expiresAt.getTime()));
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Erreur saveAdminChallenge : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean verifyAndUseChallenge(int userId, String challenge) {
+        String sql = "SELECT id FROM admin_challenges " +
+                "WHERE user_id = ? AND challenge_value = ? AND used_flag = 0 AND expires_at > NOW() " +
+                "ORDER BY id DESC LIMIT 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setString(2, challenge);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int challengeId = rs.getInt("id");
+
+                String updateSql = "UPDATE admin_challenges SET used_flag = 1 WHERE id = ?";
+                try (PreparedStatement updatePs = connection.prepareStatement(updateSql)) {
+                    updatePs.setInt(1, challengeId);
+                    updatePs.executeUpdate();
+                }
+
+                return true;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur verifyAndUseChallenge : " + e.getMessage());
+        }
+
+        return false;
     }
 
     public boolean updateProfile(int userId, String nomComplet, String email, String phone, String address, String ville) {
@@ -337,6 +353,46 @@ public class UserDAO {
                 connection.setAutoCommit(true);
             } catch (SQLException ignored) {
             }
+        }
+    }
+
+    private User mapUser(ResultSet rs) throws SQLException {
+        String role = rs.getString("role");
+        String status = rs.getString("status");
+        String publicKey = null;
+
+        try {
+            publicKey = rs.getString("public_key");
+        } catch (SQLException ignored) {
+        }
+
+        if ("client".equalsIgnoreCase(role)) {
+            Client client = new Client(
+                    rs.getString("nom"),
+                    rs.getString("prenom"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("address"),
+                    rs.getString("phone"),
+                    rs.getString("ville")
+            );
+            client.setId(rs.getInt("id"));
+            client.setRole(role);
+            client.setStatus(status);
+            client.setPublicKey(publicKey);
+            return client;
+        } else {
+            Admin admin = new Admin(
+                    rs.getString("nom"),
+                    rs.getString("prenom"),
+                    rs.getString("email"),
+                    rs.getString("password")
+            );
+            admin.setId(rs.getInt("id"));
+            admin.setRole(role);
+            admin.setStatus(status);
+            admin.setPublicKey(publicKey);
+            return admin;
         }
     }
 }

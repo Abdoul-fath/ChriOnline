@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class OtpFrame extends JFrame {
 
-    private final Client.ClientSocketService clientService;
+    private final ClientSocketService clientService;
     private final String email;
     private final JFrame backFrame;
 
@@ -71,10 +71,7 @@ public class OtpFrame extends JFrame {
         otpField.setCaretColor(Color.WHITE);
         otpField.setFont(new Font("SansSerif", Font.BOLD, 24));
         otpField.setHorizontalAlignment(JTextField.CENTER);
-        otpField.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(UITheme.BORDER),
-                "Code à 6 chiffres"
-        ));
+        otpField.setBorder(UITheme.titledBorder("Code à 6 chiffres"));
 
         statusLabel = new JLabel(" ");
         statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

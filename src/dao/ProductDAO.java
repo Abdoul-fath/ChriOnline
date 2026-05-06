@@ -20,10 +20,10 @@ public class ProductDAO {
         List<Product> products = new ArrayList<>();
 
         String sql = "SELECT p.id_product, p.name, p.description, p.price, p.stock, p.image, p.created_at, " +
-                     "p.category_id, c.id AS c_id, c.name AS c_name, c.description AS c_description " +
-                     "FROM products p " +
-                     "LEFT JOIN categories c ON p.category_id = c.id " +
-                     "ORDER BY p.id_product DESC";
+                "p.category_id, c.id AS c_id, c.name AS c_name, c.description AS c_description " +
+                "FROM products p " +
+                "LEFT JOIN categories c ON p.category_id = c.id " +
+                "ORDER BY p.id_product DESC";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
@@ -41,10 +41,10 @@ public class ProductDAO {
 
     public Product findById(int id) {
         String sql = "SELECT p.id_product, p.name, p.description, p.price, p.stock, p.image, p.created_at, " +
-                     "p.category_id, c.id AS c_id, c.name AS c_name, c.description AS c_description " +
-                     "FROM products p " +
-                     "LEFT JOIN categories c ON p.category_id = c.id " +
-                     "WHERE p.id_product = ?";
+                "p.category_id, c.id AS c_id, c.name AS c_name, c.description AS c_description " +
+                "FROM products p " +
+                "LEFT JOIN categories c ON p.category_id = c.id " +
+                "WHERE p.id_product = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -61,14 +61,13 @@ public class ProductDAO {
         return null;
     }
 
-    // ✅ Nouvelle méthode utile pour removeFromCartByName
     public Product findByName(String name) {
         String sql = "SELECT p.id_product, p.name, p.description, p.price, p.stock, p.image, p.created_at, " +
-                     "p.category_id, c.id AS c_id, c.name AS c_name, c.description AS c_description " +
-                     "FROM products p " +
-                     "LEFT JOIN categories c ON p.category_id = c.id " +
-                     "WHERE p.name = ? " +
-                     "LIMIT 1";
+                "p.category_id, c.id AS c_id, c.name AS c_name, c.description AS c_description " +
+                "FROM products p " +
+                "LEFT JOIN categories c ON p.category_id = c.id " +
+                "WHERE p.name = ? " +
+                "LIMIT 1";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
@@ -87,7 +86,7 @@ public class ProductDAO {
 
     public boolean save(Product product) {
         String sql = "INSERT INTO products (name, description, price, stock, image, category_id, created_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, NOW())";
+                "VALUES (?, ?, ?, ?, ?, ?, NOW())";
 
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, product.getName());
@@ -111,7 +110,6 @@ public class ProductDAO {
                 }
             }
 
-            System.out.println("Produit ajouté, lignes affectées = " + rows);
             return rows > 0;
 
         } catch (SQLException e) {
@@ -122,8 +120,8 @@ public class ProductDAO {
 
     public boolean update(Product product) {
         String sql = "UPDATE products " +
-                     "SET name = ?, description = ?, price = ?, stock = ?, image = ?, category_id = ? " +
-                     "WHERE id_product = ?";
+                "SET name = ?, description = ?, price = ?, stock = ?, image = ?, category_id = ? " +
+                "WHERE id_product = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, product.getName());
@@ -141,11 +139,23 @@ public class ProductDAO {
             ps.setInt(7, product.getIdProduct());
 
             int rows = ps.executeUpdate();
-            System.out.println("Produit modifié, lignes affectées = " + rows);
             return rows > 0;
 
         } catch (SQLException e) {
             System.out.println("Erreur ProductDAO update : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean updateStock(int productId, int newStock) {
+        String sql = "UPDATE products SET stock = ? WHERE id_product = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, newStock);
+            ps.setInt(2, productId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Erreur ProductDAO updateStock : " + e.getMessage());
             return false;
         }
     }
@@ -155,10 +165,7 @@ public class ProductDAO {
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
-
-            int rows = ps.executeUpdate();
-            System.out.println("Produit supprimé, lignes affectées = " + rows);
-            return rows > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.out.println("Erreur ProductDAO delete : " + e.getMessage());

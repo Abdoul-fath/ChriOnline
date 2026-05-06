@@ -23,8 +23,12 @@ public class CategoriesFrame extends JFrame {
 
         DefaultListModel<String> model = new DefaultListModel<>();
         model.addElement("🏠 Tous les produits");
+
         for (String c : categories) {
-            if (!c.equalsIgnoreCase("General") && !c.equalsIgnoreCase("Toutes") && !c.equalsIgnoreCase("Tous") && !c.isEmpty()) {
+            if (!c.equalsIgnoreCase("General")
+                    && !c.equalsIgnoreCase("Toutes")
+                    && !c.equalsIgnoreCase("Tous")
+                    && !c.isEmpty()) {
                 model.addElement(getIconForCategory(c) + " " + c);
             }
         }
@@ -74,7 +78,7 @@ public class CategoriesFrame extends JFrame {
                     : selected;
 
             if (categoryName.equals("Tous les produits")) {
-                onCategorySelected.accept("Toutes");
+                onCategorySelected.accept("Tous");
             } else {
                 onCategorySelected.accept(categoryName);
             }
@@ -92,6 +96,7 @@ public class CategoriesFrame extends JFrame {
         if (catLower.contains("access")) return "🔌";
         if (catLower.contains("phone")) return "📱";
         if (catLower.contains("laptop")) return "💻";
+        if (catLower.contains("vetement")) return "👕";
         return "📦";
     }
 }

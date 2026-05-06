@@ -127,31 +127,73 @@ public class PaymentFrame extends LanguageAwareFrame {
             String methodRaw = methods.getSelectedItem().toString();
             String method = methodRaw.contains("💳") ? "card" : "especes";
 
-            payBtn.setEnabled(false);
-            payBtn.setText("⏳ " + LanguageManager.getInstance().getText("payment.confirm") + "...");
+            if (method.equals("card")) {
+                // Paiement par carte bancaire → ouvrir le dialogue
+                CardPaymentDialog cardDialog = new CardPaymentDialog(PaymentFrame.this, session.getLastOrderTotal());
+                cardDialog.setVisible(true);
 
-            Timer timer = new Timer(100, ev -> {
-                String response = clientService.pay(session.getOrderUUID(), method);
-
-                if (response.startsWith("PAYMENT_SUCCESS")) {
-                    JOptionPane.showMessageDialog(this,
-                            "✅ " + LanguageManager.getInstance().getText("payment.success") + "\n\n" +
-                                    LanguageManager.getInstance().getText("payment.order") + ": " + shortUuid + "\n" +
-                                    LanguageManager.getInstance().getText("cart.total") + ": " + session.getLastOrderTotal() + " DH",
-                            LanguageManager.getInstance().getText("payment.success"), JOptionPane.INFORMATION_MESSAGE);
-                    session.clearOrderData();
-                    dispose();
-                    backHome.setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "❌ " + LanguageManager.getInstance().getText("payment.failed") + "\n\n" + response,
-                            LanguageManager.getInstance().getText("payment.failed"), JOptionPane.ERROR_MESSAGE);
-                    payBtn.setEnabled(true);
-                    payBtn.setText("💳 " + LanguageManager.getInstance().getText("payment.confirm"));
+                if (!cardDialog.isPaymentConfirmed()) {
+                    // L'utilisateur a annulé ou mal rempli
+                    return;
                 }
-            });
-            timer.setRepeats(false);
-            timer.start();
+
+                // Continuer avec le paiement simulé
+                payBtn.setEnabled(false);
+                payBtn.setText("⏳ " + LanguageManager.getInstance().getText("payment.confirm") + "...");
+
+                Timer timer = new Timer(500, ev -> {
+                    String response = clientService.pay(session.getOrderUUID(), method);
+
+                    if (response.startsWith("PAYMENT_SUCCESS")) {
+                        JOptionPane.showMessageDialog(PaymentFrame.this,
+                                "✅ " + LanguageManager.getInstance().getText("payment.success") + "\n\n" +
+                                        LanguageManager.getInstance().getText("payment.order") + ": " + shortUuid + "\n" +
+                                        "💳 Carte bancaire\n" +
+                                        LanguageManager.getInstance().getText("cart.total") + ": " + session.getLastOrderTotal() + " DH",
+                                LanguageManager.getInstance().getText("payment.success"), JOptionPane.INFORMATION_MESSAGE);
+                        session.clearOrderData();
+                        dispose();
+                        backHome.setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(PaymentFrame.this,
+                                "❌ " + LanguageManager.getInstance().getText("payment.failed") + "\n\n" + response,
+                                LanguageManager.getInstance().getText("payment.failed"), JOptionPane.ERROR_MESSAGE);
+                        payBtn.setEnabled(true);
+                        payBtn.setText("💳 " + LanguageManager.getInstance().getText("payment.confirm"));
+                    }
+                });
+                timer.setRepeats(false);
+                timer.start();
+
+            } else {
+                // Paiement en espèces
+                payBtn.setEnabled(false);
+                payBtn.setText("⏳ " + LanguageManager.getInstance().getText("payment.confirm") + "...");
+
+                Timer timer = new Timer(500, ev -> {
+                    String response = clientService.pay(session.getOrderUUID(), method);
+
+                    if (response.startsWith("PAYMENT_SUCCESS")) {
+                        JOptionPane.showMessageDialog(PaymentFrame.this,
+                                "✅ " + LanguageManager.getInstance().getText("payment.success") + "\n\n" +
+                                        LanguageManager.getInstance().getText("payment.order") + ": " + shortUuid + "\n" +
+                                        "💰 " + LanguageManager.getInstance().getText("payment.cash") + "\n" +
+                                        LanguageManager.getInstance().getText("cart.total") + ": " + session.getLastOrderTotal() + " DH",
+                                LanguageManager.getInstance().getText("payment.success"), JOptionPane.INFORMATION_MESSAGE);
+                        session.clearOrderData();
+                        dispose();
+                        backHome.setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(PaymentFrame.this,
+                                "❌ " + LanguageManager.getInstance().getText("payment.failed") + "\n\n" + response,
+                                LanguageManager.getInstance().getText("payment.failed"), JOptionPane.ERROR_MESSAGE);
+                        payBtn.setEnabled(true);
+                        payBtn.setText("💳 " + LanguageManager.getInstance().getText("payment.confirm"));
+                    }
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
         });
 
         backToCartBtn.addActionListener(e -> {

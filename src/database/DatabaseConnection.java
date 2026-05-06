@@ -4,42 +4,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DatabaseConnection {
+public final class DatabaseConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/chrionline?useSSL=false&serverTimezone=UTC";
+    private static final String URL =
+            "jdbc:mysql://localhost:3306/chrionline?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = ""; // mettre ton mot de passe si besoin
+    private static final String PASSWORD = "";
 
-    private static Connection connection;
-
-    private DatabaseConnection() {}
+    private DatabaseConnection() {
+    }
 
     public static Connection getConnection() {
         try {
-            if (connection == null || connection.isClosed()) {
-
-                // Charger le driver (optionnel mais recommandé)
-                Class.forName("com.mysql.cj.jdbc.Driver");
-
-                connection = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("✅ Connexion à MySQL réussie !");
-            }
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {
-            System.out.println("❌ Driver MySQL non trouvé !");
+            throw new RuntimeException("Driver MySQL introuvable.", e);
         } catch (SQLException e) {
-            System.out.println("❌ Erreur de connexion : " + e.getMessage());
-        }
-        return connection;
-    }
-
-    public static void closeConnection() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-                System.out.println("🔒 Connexion fermée.");
-            }
-        } catch (SQLException e) {
-            System.out.println("❌ Erreur fermeture : " + e.getMessage());
+            throw new RuntimeException("Impossible de se connecter à la base de données.", e);
         }
     }
 }

@@ -12,7 +12,7 @@ public class OrderDAO {
 
     private final Connection conn;
 
-    public OrderDAO() throws SQLException {
+    public OrderDAO() {
         this.conn = DatabaseConnection.getConnection();
     }
 
@@ -37,7 +37,7 @@ public class OrderDAO {
             }
 
             if (order.getItems() != null && !order.getItems().isEmpty()) {
-                OrderItemDAO itemDAO = new OrderItemDAO();
+                OrderItemDAO itemDAO = new OrderItemDAO(conn);
                 for (OrderItem item : order.getItems()) {
                     itemDAO.save(item, order.getId());
                 }
@@ -48,7 +48,6 @@ public class OrderDAO {
         } catch (SQLException e) {
             conn.rollback();
             throw e;
-
         } finally {
             conn.setAutoCommit(true);
         }
@@ -97,12 +96,30 @@ public class OrderDAO {
 
     public List<Order> findAll() throws SQLException {
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM orders ORDER BY id DESC";
+
+        String sql = """
+            SELECT 
+                o.*,
+                u.nom AS client_nom,
+                u.prenom AS client_prenom,
+                u.email AS client_email
+            FROM orders o
+            LEFT JOIN users u ON o.client_id = u.id
+            ORDER BY o.id DESC
+        """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
-                orders.add(mapOrder(rs));
+                Order order = mapOrder(rs);
+
+                order.setClientId(rs.getInt("client_id"));
+                order.setClientNom(rs.getString("client_nom"));
+                order.setClientPrenom(rs.getString("client_prenom"));
+                order.setClientEmail(rs.getString("client_email"));
+
+                orders.add(order);
             }
         }
 
@@ -112,6 +129,7 @@ public class OrderDAO {
     private Order mapOrder(ResultSet rs) throws SQLException {
         Order order = new Order();
         order.setId(rs.getInt("id"));
+        order.setClientId(rs.getInt("client_id"));
         order.setOrderUUID(rs.getString("order_uuid"));
         order.setTotalPrice(rs.getDouble("total_price"));
         order.setStatus(rs.getString("status"));

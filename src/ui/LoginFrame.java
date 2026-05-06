@@ -10,6 +10,7 @@ import java.awt.*;
 public class LoginFrame extends JFrame {
 
     private final ClientSocketService clientService;
+
     private JTextField emailField;
     private JPanel passwordPanel;
     private JLabel statusLabel;
@@ -36,7 +37,7 @@ public class LoginFrame extends JFrame {
         root.setLayout(new GridBagLayout());
 
         card = UITheme.cardPanel();
-        card.setPreferredSize(new Dimension(480, 550));
+        card.setPreferredSize(new Dimension(480, 620));
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(UITheme.BORDER, 1, true),
@@ -60,7 +61,9 @@ public class LoginFrame extends JFrame {
 
         emailField = createStyledTextField(LanguageManager.getInstance().getText("login.email"));
 
-        passwordPanel = UITheme.createPasswordFieldWithEye(LanguageManager.getInstance().getText("login.password"));
+        passwordPanel = UITheme.createPasswordFieldWithEye(
+                LanguageManager.getInstance().getText("login.password")
+        );
         passwordPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         passwordPanel.setMaximumSize(new Dimension(340, 60));
         passwordPanel.setPreferredSize(new Dimension(340, 60));
@@ -80,8 +83,17 @@ public class LoginFrame extends JFrame {
         registerBtn.setMaximumSize(new Dimension(340, 48));
         registerBtn.setPreferredSize(new Dimension(340, 48));
 
-        languageBtn = new JButton(LanguageManager.getCurrentLanguage().getFlag() + " " +
-                LanguageManager.getCurrentLanguage().getDisplayName());
+        JButton rsaLoginBtn = UITheme.blueButton("🔑 Connexion Admin avec clé RSA");
+        rsaLoginBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rsaLoginBtn.setMaximumSize(new Dimension(340, 48));
+        rsaLoginBtn.setPreferredSize(new Dimension(340, 48));
+        rsaLoginBtn.setBackground(new Color(88, 199, 250));
+        rsaLoginBtn.setForeground(Color.WHITE);
+
+        languageBtn = new JButton(
+                LanguageManager.getCurrentLanguage().getFlag() + " " +
+                        LanguageManager.getCurrentLanguage().getDisplayName()
+        );
         languageBtn.setBackground(UITheme.CARD);
         languageBtn.setForeground(Color.WHITE);
         languageBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -93,6 +105,7 @@ public class LoginFrame extends JFrame {
 
         languageBtn.addActionListener(e -> {
             JPopupMenu langMenu = new JPopupMenu();
+
             for (LanguageManager.Language lang : LanguageManager.Language.values()) {
                 JMenuItem item = new JMenuItem(lang.getFlag() + " " + lang.getDisplayName());
                 item.addActionListener(ev -> {
@@ -101,7 +114,13 @@ public class LoginFrame extends JFrame {
                 });
                 langMenu.add(item);
             }
+
             langMenu.show(languageBtn, 0, languageBtn.getHeight());
+        });
+
+        rsaLoginBtn.addActionListener(e -> {
+            dispose();
+            new AdminRSAuthFrame(clientService).setVisible(true);
         });
 
         card.add(icon);
@@ -120,72 +139,147 @@ public class LoginFrame extends JFrame {
         card.add(Box.createVerticalStrut(12));
         card.add(registerBtn);
         card.add(Box.createVerticalStrut(12));
+        card.add(rsaLoginBtn);
+        card.add(Box.createVerticalStrut(12));
         card.add(languageBtn);
 
         root.add(card);
         setContentPane(root);
 
         loginBtn.addActionListener(e -> doLogin());
+
         registerBtn.addActionListener(e -> {
             setVisible(false);
             new RegisterFrame(clientService, this).setVisible(true);
         });
     }
 
-    private JTextField createStyledTextField(String title) {
+    private JTextField createStyledTextField(String titleText) {
         JTextField field = UITheme.textField();
         field.setMaximumSize(new Dimension(340, 52));
         field.setPreferredSize(new Dimension(340, 52));
-        field.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(UITheme.BORDER),
-                title
-        ));
+        field.setBorder(UITheme.titledBorder(titleText));
         return field;
     }
 
     private void doLogin() {
         String email = emailField.getText().trim();
+
         JPasswordField passwordField = UITheme.getPasswordFieldFromPanel(passwordPanel);
-        String password = new String(passwordField.getPassword()).trim();
+        String password = passwordField == null ? "" : new String(passwordField.getPassword()).trim();
+
+        statusLabel.setForeground(UITheme.RED);
+        statusLabel.setText(" ");
 
         if (email.isEmpty() || password.isEmpty()) {
             statusLabel.setText(LanguageManager.getInstance().getText("login.error.empty"));
             return;
         }
 
-        if (!clientService.connect()) {
-            statusLabel.setText(LanguageManager.getInstance().getText("login.error.server"));
-            return;
-        }
+        loginBtn.setEnabled(false);
 
-        String response = clientService.login(email, password);
+        try {
+            if (!clientService.connect()) {
+                if ("ERROR:TOO_MANY_CONNECTIONS".equals(clientService.getLastConnectionError())) {
+                    statusLabel.setText("Trop de connexions ouvertes. Fermez une fenêtre puis réessayez.");
 
-        if (response != null && response.startsWith("LOGIN_SUCCESS")) {
-            try {
-                String[] parts = response.split(":");
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Trop de connexions sont ouvertes depuis votre ordinateur.\nFermez une autre fenêtre de l'application puis réessayez.",
+                            "Connexion refusée",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                } else {
+                    statusLabel.setText(LanguageManager.getInstance().getText("login.error.server"));
+                }
+                return;
+            }
+
+            String response = clientService.login(email, password);
+
+            if (response != null && response.startsWith("LOGIN_SUCCESS:")) {
+                String[] parts = response.split(":", -1);
+
+                if (parts.length < 3) {
+                    statusLabel.setText(LanguageManager.getInstance().getText("login.error.invalid"));
+                    return;
+                }
+
+                int userId = Integer.parseInt(parts[1]);
+                String role = parts[2];
+
+                if (parts.length >= 4) {
+                    clientService.setSessionToken(parts[3]);
+                }
 
                 AppSession session = new AppSession();
-                session.setClientId(Integer.parseInt(parts[1]));
-                session.setRole(parts[2]);
+                session.setUserId(userId);
+                session.setRole(role);
+
+                String profileResponse = clientService.getProfile(userId);
+                if (profileResponse != null && profileResponse.startsWith("PROFILE_DATA:")) {
+                    String data = profileResponse.substring("PROFILE_DATA:".length());
+                    String[] fields = data.split(";", -1);
+
+                    if (fields.length >= 1) {
+                        session.setFullName(fields[0].trim());
+                    }
+                }
 
                 dispose();
-                new ShopFrame(clientService, session).setVisible(true);
 
-            } catch (Exception e) {
+                if ("admin".equalsIgnoreCase(role)) {
+                    new ui.admin.AdminMainFrame(clientService, session).setVisible(true);
+                } else {
+                    new ShopFrame(clientService, session).setVisible(true);
+                }
+
+            } else if ("ERROR:TOO_MANY_CONNECTIONS".equals(response)) {
+                statusLabel.setText("Trop de connexions ouvertes. Fermez une fenêtre puis réessayez.");
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Trop de connexions sont ouvertes depuis votre ordinateur.\nFermez une autre fenêtre de l'application puis réessayez.",
+                        "Connexion refusée",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+            } else if ("ERROR:TOO_MANY_ATTEMPTS".equals(response)) {
+                statusLabel.setForeground(UITheme.RED);
+                statusLabel.setText("Trop de tentatives. Réessayez après 5 minutes.");
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Trop de tentatives de connexion.\nVotre accès est bloqué temporairement.\nRéessayez après 5 minutes.",
+                        "Connexion bloquée",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+            } else if ("ERROR:ACCOUNT_NOT_ACTIVE".equals(response)) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Votre compte n'est pas encore activé.\nVeuillez vérifier le code OTP.",
+                        "Compte non activé",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+                setVisible(false);
+                new OtpFrame(clientService, email, this).setVisible(true);
+
+            } else if ("ERROR:SERVER_UNREACHABLE".equals(response)
+                    || "ERROR:NO_RESPONSE".equals(response)
+                    || "ERROR:COMMUNICATION".equals(response)) {
+                statusLabel.setText(LanguageManager.getInstance().getText("login.error.server"));
+
+            } else {
                 statusLabel.setText(LanguageManager.getInstance().getText("login.error.invalid"));
             }
 
-        } else if ("ERROR:ACCOUNT_NOT_ACTIVE".equals(response)) {
-            JOptionPane.showMessageDialog(this,
-                    "Votre compte n'est pas encore activé.\nVeuillez vérifier le code OTP.",
-                    "Compte non activé",
-                    JOptionPane.WARNING_MESSAGE);
-
-            setVisible(false);
-            new OtpFrame(clientService, email, this).setVisible(true);
-
-        } else {
-            statusLabel.setText(LanguageManager.getInstance().getText("login.error.invalid"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            statusLabel.setText(LanguageManager.getInstance().getText("login.error.server"));
+        } finally {
+            loginBtn.setEnabled(true);
         }
     }
 
@@ -193,15 +287,19 @@ public class LoginFrame extends JFrame {
         setTitle(LanguageManager.getInstance().getText("login.title"));
         title.setText(LanguageManager.getInstance().getText("login.title"));
         subtitle.setText(LanguageManager.getInstance().getText("login.subtitle"));
-        languageBtn.setText(LanguageManager.getCurrentLanguage().getFlag() + " " +
-                LanguageManager.getCurrentLanguage().getDisplayName());
 
-        emailField.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(UITheme.BORDER),
+        languageBtn.setText(
+                LanguageManager.getCurrentLanguage().getFlag() + " " +
+                        LanguageManager.getCurrentLanguage().getDisplayName()
+        );
+
+        emailField.setBorder(UITheme.titledBorder(
                 LanguageManager.getInstance().getText("login.email")
         ));
 
-        JPanel newPasswordPanel = UITheme.createPasswordFieldWithEye(LanguageManager.getInstance().getText("login.password"));
+        JPanel newPasswordPanel = UITheme.createPasswordFieldWithEye(
+                LanguageManager.getInstance().getText("login.password")
+        );
         newPasswordPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         newPasswordPanel.setMaximumSize(new Dimension(340, 60));
         newPasswordPanel.setPreferredSize(new Dimension(340, 60));
@@ -213,6 +311,7 @@ public class LoginFrame extends JFrame {
                 break;
             }
         }
+
         if (index != -1) {
             card.remove(index);
             passwordPanel = newPasswordPanel;
@@ -221,6 +320,9 @@ public class LoginFrame extends JFrame {
 
         loginBtn.setText("🔐 " + LanguageManager.getInstance().getText("login.button"));
         registerBtn.setText("📝 " + LanguageManager.getInstance().getText("login.register"));
+
+        statusLabel.setForeground(UITheme.RED);
+        statusLabel.setText(" ");
 
         card.revalidate();
         card.repaint();

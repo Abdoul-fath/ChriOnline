@@ -29,7 +29,7 @@ public class RegisterFrame extends JFrame {
 
     private void initUI() {
         setTitle("📝 ChriOnline - Inscription");
-        setSize(800, 780);
+        setSize(800, 860);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
@@ -38,7 +38,7 @@ public class RegisterFrame extends JFrame {
         root.setLayout(new GridBagLayout());
 
         JPanel card = UITheme.cardPanel();
-        card.setPreferredSize(new Dimension(500, 680));
+        card.setPreferredSize(new Dimension(500, 760));
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(UITheme.BORDER, 1, true),
@@ -128,10 +128,7 @@ public class RegisterFrame extends JFrame {
         JTextField field = UITheme.textField();
         field.setMaximumSize(new Dimension(340, 48));
         field.setPreferredSize(new Dimension(340, 48));
-        field.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(UITheme.BORDER),
-                title
-        ));
+        field.setBorder(UITheme.titledBorder(title));
         return field;
     }
 

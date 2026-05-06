@@ -21,7 +21,6 @@ public class ProductService {
         return productDAO.findById(id);
     }
 
-    // ✅ Nouveau
     public Product getProductByName(String name) {
         return productDAO.findByName(name);
     }
@@ -32,6 +31,10 @@ public class ProductService {
 
     public boolean updateProduct(Product product) {
         return productDAO.update(product);
+    }
+
+    public boolean updateProductStock(int productId, int newStock) {
+        return productDAO.updateStock(productId, newStock);
     }
 
     public boolean deleteProduct(int id) {

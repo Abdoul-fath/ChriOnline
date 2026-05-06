@@ -1,0 +1,332 @@
+[2026-05-06 12:33:05] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 12:33:05] [INFO] SERVER - Serveur lancé sur le port 5000
+[2026-05-06 12:37:57] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 12:37:58] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 12:37:58] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_AUTH_REQUEST:hisouabdoulfatah@gmail.com
+[2026-05-06 12:37:58] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_CHALLENGE_RESPONSE:hisouabdoulfatah@gmail.com:sJp2XkHMbdxAeHDOTy6lBiuT1apoeVCVlaeLq/fEoBCFlAEoYXp469v3wJAJ6nXwwG9XujSs/nu4WiTVXaJ1VxZLL3sx/SljvnhG7LwHZ54EJJKHrhSv32JRnJri3IG22gZwaderSKIjN+XBM9Ql7gQzm1Yz4J60QMVQOxCvtrhsfgBRM0zt0YAOkIu/e2RhWppPvgLM5TunYAEMjSJdxAz/NWTrcxkc7D3CPvXMMfxzDNUsUDPvLjivDYYNMoPrKlY1aUgx0eh/84vtA/PHpEgUcK2u6OqRr3RVLvCBs6q8msft6UeHHUe69zqYl4JWJQA+ZIvfleWwW9ZjJ7uQYQ==:frd56FlFBZJJFjpRYJjmlaJCgojkzYCD6E7p3wnw/2I=
+[2026-05-06 12:37:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE_BY_EMAIL:hisouabdoulfatah@gmail.com
+[2026-05-06 12:37:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_DASHBOARD_SUMMARY
+[2026-05-06 12:37:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_NOTIFICATIONS
+[2026-05-06 12:37:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_ALERTS
+[2026-05-06 12:37:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 12:37:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_CATEGORIES
+[2026-05-06 12:37:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_ORDERS
+[2026-05-06 12:37:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_USERS
+[2026-05-06 12:37:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_NOTIFICATIONS
+[2026-05-06 12:38:00] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_ALERTS
+[2026-05-06 12:38:00] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_HISTORY
+[2026-05-06 12:38:00] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_DASHBOARD_SUMMARY
+[2026-05-06 12:38:23] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 12:38:23] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 12:40:09] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 12:40:10] [INFO] SERVER - Serveur lancé sur le port 5000
+[2026-05-06 12:41:30] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 12:41:31] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 12:41:31] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : REGISTER:uhefuen:eufuenf:abdoulfatah.omarhassan@etu.uae.ac.ma:123456789:indvndjc:82829928:vnjdnvjfd
+[2026-05-06 12:41:47] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : SEND_OTP:abdoulfatah.omarhassan@etu.uae.ac.ma
+[2026-05-06 12:41:52] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 12:41:52] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 12:42:45] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 12:42:45] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 12:42:45] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : REGISTER:efefefe:wdwdw:abdoulfatah.omarhassan@etu.uae.ac.ma:123456789:dvdvfv:232444242:efefefe
+[2026-05-06 12:43:19] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : REGISTER:efefefe:wdwdw:abdoulfatah.omarhassan@etu.uae.ac.ma:123456789:dvdvfv:232444242:efefefe
+[2026-05-06 12:43:41] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : VERIFY_OTP:abdoulfatah.omarhassan@etu.uae.ac.ma:142828
+[2026-05-06 12:43:50] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:123456789
+[2026-05-06 12:43:50] [INFO] SECURITY - Connexion réussie : email=abdoulfatah.omarhassan@etu.uae.ac.ma, role=client, ip=127.0.0.1
+[2026-05-06 12:43:50] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:20
+[2026-05-06 12:43:51] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 12:43:51] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 12:43:53] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:20
+[2026-05-06 12:45:06] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:wjwfnjfne
+[2026-05-06 12:45:06] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:45:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:wjwfnjfne
+[2026-05-06 12:45:10] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:45:13] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:wjwfnjfne
+[2026-05-06 12:45:13] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:45:16] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:wjwfnjfne
+[2026-05-06 12:45:16] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:45:19] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:wjwfnjfne
+[2026-05-06 12:45:19] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:45:25] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:wjwfnjfne
+[2026-05-06 12:45:25] [WARN] SECURITY - Connexion bloquée temporairement : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:45:36] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:123456789
+[2026-05-06 12:45:36] [WARN] SECURITY - Connexion bloquée temporairement : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:45:44] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 12:45:44] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 12:46:49] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 12:46:49] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 12:46:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:123456789
+[2026-05-06 12:46:49] [WARN] SECURITY - Connexion bloquée temporairement : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:52:04] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 12:52:04] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 12:55:45] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 12:55:45] [INFO] SERVER - Serveur lancé sur le port 5000
+[2026-05-06 12:56:29] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 12:56:29] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 12:56:29] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:123456789
+[2026-05-06 12:56:29] [INFO] SECURITY - Connexion réussie : email=abdoulfatah.omarhassan@etu.uae.ac.ma, role=client, ip=127.0.0.1
+[2026-05-06 12:56:29] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:20
+[2026-05-06 12:56:29] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 12:56:29] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 12:56:30] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:20
+[2026-05-06 12:56:41] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:nfdjfnjnejs
+[2026-05-06 12:56:41] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:56:43] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:nfdjfnjnejs
+[2026-05-06 12:56:43] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:56:44] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:nfdjfnjnejs
+[2026-05-06 12:56:44] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:56:48] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:nfdjfnjnejs
+[2026-05-06 12:56:48] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:56:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:nfdjfnjnejs
+[2026-05-06 12:56:49] [WARN] SECURITY - Échec connexion : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:56:51] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:nfdjfnjnejs
+[2026-05-06 12:56:51] [WARN] SECURITY - Connexion bloquée temporairement : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:56:58] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:nfdjfnjnejs
+[2026-05-06 12:56:58] [WARN] SECURITY - Connexion bloquée temporairement : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 12:59:08] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 12:59:08] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 12:59:08] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : HACK_TEST:abc
+[2026-05-06 12:59:08] [WARN] SECURITY - Commande invalide bloquée depuis 127.0.0.1 : HACK_TEST:abc
+[2026-05-06 12:59:08] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 13:01:38] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:abdoulfatah.omarhassan@etu.uae.ac.ma:123456789
+[2026-05-06 13:01:38] [WARN] SECURITY - Connexion bloquée temporairement : email=abdoulfatah.omarhassan@etu.uae.ac.ma, ip=127.0.0.1
+[2026-05-06 13:03:35] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : REGISTER:eiufneunfj:weqfoijwejfnc:mohamedchireh6@gmail.com:123456789:zehfuwn:7433434637:hsfbhdbc
+[2026-05-06 13:04:00] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : VERIFY_OTP:mohamedchireh6@gmail.com:204185
+[2026-05-06 13:04:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:04:10] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:04:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:04:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:04:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:04:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:08:07] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 13:08:07] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 13:08:26] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 13:08:26] [INFO] SERVER - Serveur lancé sur le port 5000
+[2026-05-06 13:09:01] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:09:01] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:09:01] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:09:02] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:09:02] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:09:02] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:09:02] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:09:04] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:11:20] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:11:20] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:11:20] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:11:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:11:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:11:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:11:36] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:11:36] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:11:36] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:11:36] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:11:36] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:11:36] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:11:36] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:11:38] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:11:52] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:11:52] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:11:52] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:11:52] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:11:52] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:11:52] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:11:52] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:11:54] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:12:06] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:12:06] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:12:06] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:12:06] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:12:06] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:12:06] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:12:06] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:12:09] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:12:20] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:12:20] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:12:20] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:12:20] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:12:20] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:12:20] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:12:20] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:12:23] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:12:34] [WARN] SECURITY - Connexion refusée : trop de connexions depuis 127.0.0.1
+[2026-05-06 13:12:50] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 13:12:50] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 13:12:51] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 13:12:51] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 13:12:52] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 13:12:52] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 13:12:53] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 13:12:53] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 13:12:53] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 13:12:53] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 13:22:27] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 13:22:27] [INFO] SERVER - Serveur lancé sur le port 5000
+[2026-05-06 13:23:23] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:23:23] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:23:23] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:23:24] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:23:24] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:23:24] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:23:24] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:23:24] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:23:42] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:23:42] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:23:42] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:23:42] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:23:42] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:23:42] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:23:42] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:23:43] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:23:56] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:23:56] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:23:56] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:23:56] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:23:56] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:23:56] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:23:56] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:23:57] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:24:10] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:24:10] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:24:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:24:10] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:24:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:24:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:24:10] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:24:11] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:24:23] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 13:24:23] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 13:24:23] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : LOGIN:mohamedchireh6@gmail.com:123456789
+[2026-05-06 13:24:23] [INFO] SECURITY - Connexion réussie : email=mohamedchireh6@gmail.com, role=client, ip=127.0.0.1
+[2026-05-06 13:24:23] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE:21
+[2026-05-06 13:24:23] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 13:24:23] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_CATEGORIES
+[2026-05-06 13:24:24] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : CART_GET:21
+[2026-05-06 13:24:47] [WARN] SECURITY - Connexion refusée : trop de connexions depuis 127.0.0.1
+[2026-05-06 13:25:02] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 13:25:02] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 13:50:18] [INFO] SERVER - ========================================
+[2026-05-06 13:50:18] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 13:50:18] [INFO] SERVER - Protection TP1/TP2/TP3/TP4 activée
+[2026-05-06 13:50:18] [INFO] SERVER - ========================================
+[2026-05-06 13:50:18] [INFO] SERVER - Serveur UDP sécurité lancé sur le port 5001
+[2026-05-06 13:50:18] [INFO] SERVER - Serveur TCP lancé sur le port 5000
+[2026-05-06 13:50:18] [ERROR] SERVER - Erreur serveur UDP : Address already in use: bind
+[2026-05-06 13:51:52] [INFO] SERVER - ========================================
+[2026-05-06 13:51:52] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 13:51:52] [INFO] SERVER - Protection TP1/TP2/TP3/TP4 activée
+[2026-05-06 13:51:52] [INFO] SERVER - ========================================
+[2026-05-06 13:51:52] [INFO] SERVER - Serveur UDP sécurité lancé sur le port 6001
+[2026-05-06 13:51:52] [ERROR] SERVER - Erreur serveur UDP : Address already in use: bind
+[2026-05-06 13:51:52] [INFO] SERVER - Serveur TCP lancé sur le port 5000
+[2026-05-06 13:55:37] [INFO] SERVER - ========================================
+[2026-05-06 13:55:37] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 13:55:37] [INFO] SERVER - Protection TP1/TP2/TP3/TP4 activée
+[2026-05-06 13:55:37] [INFO] SERVER - ========================================
+[2026-05-06 13:55:37] [INFO] SERVER - Serveur UDP sécurité lancé sur le port 6001
+[2026-05-06 13:55:37] [INFO] SERVER - Serveur TCP lancé sur le port 5000
+[2026-05-06 13:55:37] [ERROR] SERVER - Erreur serveur UDP : Address already in use: bind
+[2026-05-06 13:57:59] [INFO] SERVER - ========================================
+[2026-05-06 13:57:59] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 13:57:59] [INFO] SERVER - Protection TP1/TP2/TP3/TP4 activée
+[2026-05-06 13:57:59] [INFO] SERVER - ========================================
+[2026-05-06 13:57:59] [INFO] SERVER - Serveur TCP lancé sur le port 5000
+[2026-05-06 13:57:59] [ERROR] SERVER - Impossible de lancer le serveur UDP sur le port 7001 : Address already in use: bind
+[2026-05-06 14:03:24] [INFO] SERVER - ========================================
+[2026-05-06 14:03:24] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 14:03:24] [INFO] SERVER - Protection TP1/TP2/TP3/TP4 activée
+[2026-05-06 14:03:24] [INFO] SERVER - ========================================
+[2026-05-06 14:03:24] [INFO] SERVER - Serveur TCP lancé sur le port 5000
+[2026-05-06 14:03:24] [INFO] SERVER - Serveur UDP sécurité lancé sur le port 7001
+[2026-05-06 14:04:40] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 14:04:40] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 14:04:40] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_NONCE
+[2026-05-06 14:04:40] [INFO] SECURITY - Nonce généré pour protection anti-replay
+[2026-05-06 14:04:40] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_SECURE_TEST:QGcZZx-WVX5d9bnUouXTsRc80zdThovX:TEST_MESSAGE
+[2026-05-06 14:04:40] [INFO] SECURITY - Commande anti-replay acceptée : TEST_MESSAGE
+[2026-05-06 14:04:40] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_SECURE_TEST:QGcZZx-WVX5d9bnUouXTsRc80zdThovX:TEST_MESSAGE
+[2026-05-06 14:04:40] [WARN] SECURITY - Replay Attack détectée : nonce réutilisé ou expiré
+[2026-05-06 14:04:40] [INFO] SERVER - Connexion libérée : 127.0.0.1
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_1
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_2
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_3
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_4
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_5
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_6
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_7
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_8
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_9
+[2026-05-06 14:07:07] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_10
+[2026-05-06 14:07:07] [WARN] SECURITY - UDP Flood bloqué depuis IP=127.0.0.1
+[2026-05-06 14:07:08] [WARN] SECURITY - UDP Flood bloqué depuis IP=127.0.0.1
+[2026-05-06 14:07:08] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_13
+[2026-05-06 14:07:08] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_14
+[2026-05-06 14:07:09] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_15
+[2026-05-06 14:07:09] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_16
+[2026-05-06 14:07:09] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_17
+[2026-05-06 14:07:09] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_18
+[2026-05-06 14:07:09] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_19
+[2026-05-06 14:07:09] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_20
+[2026-05-06 14:07:09] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_21
+[2026-05-06 14:07:09] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_22
+[2026-05-06 14:07:09] [WARN] SECURITY - UDP Flood bloqué depuis IP=127.0.0.1
+[2026-05-06 14:07:09] [WARN] SECURITY - UDP Flood bloqué depuis IP=127.0.0.1
+[2026-05-06 14:07:10] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_25
+[2026-05-06 14:07:10] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_26
+[2026-05-06 14:07:10] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_27
+[2026-05-06 14:07:10] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_28
+[2026-05-06 14:07:10] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_29
+[2026-05-06 14:07:10] [INFO] SECURITY - Paquet UDP accepté depuis 127.0.0.1 : UDP_TEST_PACKET_30
+[2026-05-06 14:14:29] [INFO] SERVER - ========================================
+[2026-05-06 14:14:29] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 14:14:29] [INFO] SERVER - Protection TP1/TP2/TP3/TP4 activée
+[2026-05-06 14:14:29] [INFO] SERVER - ========================================
+[2026-05-06 14:14:29] [INFO] SERVER - Serveur TCP lancé sur le port 5000
+[2026-05-06 14:14:29] [INFO] SERVER - Serveur UDP sécurité lancé sur le port 7001
+[2026-05-06 14:15:19] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 14:15:20] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 14:15:20] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_AUTH_REQUEST:hisouabdoulfatah@gmail.com
+[2026-05-06 14:15:20] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_CHALLENGE_RESPONSE:hisouabdoulfatah@gmail.com:LNSkiQgv5u4+WryxRfxGgdT62Rk6/7eiEpLUXO8/3LnzaDotCzSWe7EH+EqiBG5ejMSfH7+AZBxLxjZHjFS/fs6NgB9DQFrVz6Sgoc/EBNvtOqa9LbI89pknXX3yKT1mh8Lpqv/qXJOqgwlpZIQwECIJCdwb2diQ59hJ1oe/kRL+tRPZi2dtiwU+lJkFwFba51zhvUYtjGpuvebTNnfasYtLhVeiQ4B/RsdPhBfZGkW2O0iRdLBANLb9Df3+J2RtKvBqT3EPKGvmswH5FwuyHUpje59Y3xaf+XPYS42mU+vgTbMP/zmB4Tf5UBr0TfPlSce4l053Bs49Kk2GGdwFLA==:enrD1ebBf/BcAFe8Be4TYBWHGHrOTX/VPI0r+v7kItw=
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE_BY_EMAIL:hisouabdoulfatah@gmail.com
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_DASHBOARD_SUMMARY
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_NOTIFICATIONS
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_ALERTS
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_CATEGORIES
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_ORDERS
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_USERS
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_NOTIFICATIONS
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_ALERTS
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_HISTORY
+[2026-05-06 14:15:21] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_DASHBOARD_SUMMARY
+[2026-05-06 14:19:10] [INFO] SERVER - ========================================
+[2026-05-06 14:19:10] [INFO] SERVER - Démarrage du serveur ChriOnline...
+[2026-05-06 14:19:10] [INFO] SERVER - Protection TP1/TP2/TP3/TP4 activée
+[2026-05-06 14:19:10] [INFO] SERVER - ========================================
+[2026-05-06 14:19:10] [INFO] SERVER - Serveur TCP lancé sur le port 5000
+[2026-05-06 14:19:10] [INFO] SERVER - Serveur UDP sécurité lancé sur le port 7001
+[2026-05-06 14:19:47] [INFO] SERVER - Nouveau client connecté : 127.0.0.1
+[2026-05-06 14:19:48] [INFO] SERVER - Client connecté : 127.0.0.1
+[2026-05-06 14:19:48] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_AUTH_REQUEST:hisouabdoulfatah@gmail.com
+[2026-05-06 14:19:48] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_CHALLENGE_RESPONSE:hisouabdoulfatah@gmail.com:MG/w7o6q3DFdqOdWYtvbU7cb1Vxn9IHcujk0csV9t7ZYWyCJP6WssrbO/Jr9jyB09XFw1ZYjMT8eU+3BXcLG/U8x8WhntC2NEld3JN8HrNMzqeG5FeZpziELalkJiuNDtQtL3UzOWwXXeHSYSUtDaTfh9IT0BG1rOtZyeXCthC+F6b2iHiEXn2vLGjLXsh0AhEvG8yfzdAYXVDC/tXYoE+1ZEZcelrRIJGNwt53P54B8fFA98vJCLSQnxNwGGAXs8R++SYbFc/fn3H62mNSUc+GIrR25qXGi6ZR6ytN6H26EwISveaUc7RMNUhFgjudwEFv6Yz425RF9G+os6Q8phg==:QCXpC38hYQnnr1NS+BM6J++sGQ559l5jjdnidI1OOvk=
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PROFILE_BY_EMAIL:hisouabdoulfatah@gmail.com
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_DASHBOARD_SUMMARY
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_NOTIFICATIONS
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_ALERTS
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_CATEGORIES
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_ORDERS
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_USERS
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_NOTIFICATIONS
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_ALERTS
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_HISTORY
+[2026-05-06 14:19:49] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_DASHBOARD_SUMMARY
+[2026-05-06 14:19:54] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : GET_PRODUCTS
+[2026-05-06 14:19:56] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_CATEGORIES
+[2026-05-06 14:19:58] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_ORDERS
+[2026-05-06 14:19:59] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_USERS
+[2026-05-06 14:20:00] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_NOTIFICATIONS
+[2026-05-06 14:20:02] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_ALERTS
+[2026-05-06 14:20:02] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_STOCK_HISTORY
+[2026-05-06 14:20:03] [INFO] SERVER - Requête reçue depuis 127.0.0.1 : ADMIN_GET_DASHBOARD_SUMMARY
+[2026-05-06 14:20:08] [WARN] SERVER - Client déconnecté : 127.0.0.1
+[2026-05-06 14:20:08] [INFO] SERVER - Connexion libérée : 127.0.0.1

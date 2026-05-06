@@ -15,44 +15,101 @@ public class ClientSocketService {
     private PrintWriter out;
     private boolean connected = false;
 
+    private String sessionToken;
+    private String lastConnectionError;
+
     public ClientSocketService() {
     }
 
     public boolean connect() {
         try {
-            if (connected && socket != null && !socket.isClosed()) {
+            if (isConnected()) {
                 return true;
             }
+
+            lastConnectionError = null;
 
             socket = new Socket(SERVER_HOST, SERVER_PORT);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
             String msg = in.readLine();
-            connected = "CONNECTED_TO_SERVER".equals(msg);
-            return connected;
+
+            if ("CONNECTED_TO_SERVER".equals(msg)) {
+                connected = true;
+                return true;
+            }
+
+            if ("ERROR:TOO_MANY_CONNECTIONS".equals(msg)) {
+                connected = false;
+                lastConnectionError = "ERROR:TOO_MANY_CONNECTIONS";
+                close();
+                return false;
+            }
+
+            connected = false;
+            lastConnectionError = "ERROR:SERVER_UNREACHABLE";
+            close();
+            return false;
 
         } catch (Exception e) {
             connected = false;
+            lastConnectionError = "ERROR:SERVER_UNREACHABLE";
             return false;
         }
     }
 
+    public boolean isConnected() {
+        return connected && socket != null && !socket.isClosed();
+    }
+
+    public String getLastConnectionError() {
+        return lastConnectionError;
+    }
+
+    public String ping() {
+        return sendRequest("PING");
+    }
+
     public String sendRequest(String request) {
         try {
-            if (!connected || socket == null || socket.isClosed()) {
+            if (!isConnected()) {
                 if (!connect()) {
+                    if ("ERROR:TOO_MANY_CONNECTIONS".equals(lastConnectionError)) {
+                        return "ERROR:TOO_MANY_CONNECTIONS";
+                    }
                     return "ERROR:SERVER_UNREACHABLE";
                 }
             }
 
             out.println(request);
+
             String response = in.readLine();
-            return response == null ? "ERROR:NO_RESPONSE" : response;
+
+            if (response == null) {
+                connected = false;
+                return "ERROR:NO_RESPONSE";
+            }
+
+            extractSessionTokenIfLoginSuccess(response);
+
+            return response;
 
         } catch (Exception e) {
             connected = false;
             return "ERROR:COMMUNICATION";
+        }
+    }
+
+    private void extractSessionTokenIfLoginSuccess(String response) {
+        if (response == null || !response.startsWith("LOGIN_SUCCESS:")) {
+            return;
+        }
+
+        String[] parts = response.split(":", -1);
+
+        if (parts.length >= 4) {
+            sessionToken = parts[3];
         }
     }
 
@@ -62,8 +119,14 @@ public class ClientSocketService {
 
     public String register(String nom, String prenom, String email, String password,
                            String address, String phone, String ville) {
-        return sendRequest("REGISTER:" + safe(nom) + ":" + safe(prenom) + ":" + safe(email) + ":" +
-                safe(password) + ":" + safe(address) + ":" + safe(phone) + ":" + safe(ville));
+        return sendRequest("REGISTER:" +
+                safe(nom) + ":" +
+                safe(prenom) + ":" +
+                safe(email) + ":" +
+                safe(password) + ":" +
+                safe(address) + ":" +
+                safe(phone) + ":" +
+                safe(ville));
     }
 
     public String sendOtp(String email) {
@@ -80,6 +143,10 @@ public class ClientSocketService {
 
     public String getProduct(int productId) {
         return sendRequest("GET_PRODUCT:" + productId);
+    }
+
+    public String getCategories() {
+        return sendRequest("GET_CATEGORIES");
     }
 
     public String addToCart(int clientId, int productId, int quantity) {
@@ -114,7 +181,23 @@ public class ClientSocketService {
         return pay(uuid, method);
     }
 
-    public String adminAddProduct(String name, String description, double price, int stock, String image, int categoryId) {
+    public String getProfile(int userId) {
+        return sendRequest("GET_PROFILE:" + userId);
+    }
+
+    public String updateProfile(int userId, String fullName, String email,
+                                String phone, String address, String city) {
+        return sendRequest("UPDATE_PROFILE:" +
+                userId + ":" +
+                safe(fullName) + ":" +
+                safe(email) + ":" +
+                safe(phone) + ":" +
+                safe(address) + ":" +
+                safe(city));
+    }
+
+    public String adminAddProduct(String name, String description, double price,
+                                  int stock, String image, int categoryId) {
         return sendRequest("ADMIN_ADD_PRODUCT:" +
                 safe(name) + ":" +
                 safe(description) + ":" +
@@ -124,7 +207,8 @@ public class ClientSocketService {
                 categoryId);
     }
 
-    public String adminUpdateProduct(int productId, String name, String description, double price, int stock, String image, int categoryId) {
+    public String adminUpdateProduct(int productId, String name, String description,
+                                     double price, int stock, String image, int categoryId) {
         return sendRequest("ADMIN_UPDATE_PRODUCT:" +
                 productId + ":" +
                 safe(name) + ":" +
@@ -148,7 +232,10 @@ public class ClientSocketService {
     }
 
     public String adminUpdateCategory(int categoryId, String name, String description) {
-        return sendRequest("ADMIN_UPDATE_CATEGORY:" + categoryId + ":" + safe(name) + ":" + safe(description));
+        return sendRequest("ADMIN_UPDATE_CATEGORY:" +
+                categoryId + ":" +
+                safe(name) + ":" +
+                safe(description));
     }
 
     public String adminDeleteCategory(int categoryId) {
@@ -167,33 +254,95 @@ public class ClientSocketService {
         return sendRequest("ADMIN_UPDATE_ORDER_STATUS:" + orderId + ":" + safe(status));
     }
 
-    public String getProfile(int userId) {
-        return sendRequest("GET_PROFILE:" + userId);
+    public String adminGetDashboardSummary() {
+        return sendRequest("ADMIN_GET_DASHBOARD_SUMMARY");
     }
 
-    public String updateProfile(int userId, String fullName, String email, String phone, String address, String city) {
-        return sendRequest("UPDATE_PROFILE:" +
-                userId + ":" +
-                safe(fullName) + ":" +
-                safe(email) + ":" +
-                safe(phone) + ":" +
-                safe(address) + ":" +
-                safe(city));
+    public String adminGetNotifications() {
+        return sendRequest("ADMIN_GET_NOTIFICATIONS");
+    }
+
+    public String adminMarkNotificationRead(int notificationId) {
+        return sendRequest("ADMIN_MARK_NOTIFICATION_READ:" + notificationId);
+    }
+
+    public String adminGetStockAlerts() {
+        return sendRequest("ADMIN_GET_STOCK_ALERTS");
+    }
+
+    public String adminGetStockHistory() {
+        return sendRequest("ADMIN_GET_STOCK_HISTORY");
+    }
+
+    public String adminAdjustStock(int productId, int quantity, String movementType,
+                                   String reason, int adminUserId) {
+        return sendRequest("ADMIN_ADJUST_STOCK:" +
+                productId + ":" +
+                quantity + ":" +
+                safe(movementType) + ":" +
+                safe(reason) + ":" +
+                adminUserId);
+    }
+
+    public String requestAdminChallenge(String email) {
+        return sendRequest("ADMIN_AUTH_REQUEST:" + safe(email));
+    }
+
+    public String verifyAdminSignature(String email, String signature, String challenge) {
+        return sendRequest("ADMIN_CHALLENGE_RESPONSE:"
+                + safe(email) + ":"
+                + safe(signature) + ":"
+                + safe(challenge));
+    }
+
+    public String getProfileByEmail(String email) {
+        return sendRequest("GET_PROFILE_BY_EMAIL:" + safe(email));
+    }
+
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    public boolean hasSessionToken() {
+        return sessionToken != null && !sessionToken.isBlank();
     }
 
     private String safe(String value) {
         if (value == null) return "";
+
         return value.replace(":", "-")
                 .replace(";", ",")
-                .replace("|", "/");
+                .replace("|", "/")
+                .replace("\n", " ")
+                .replace("\r", " ")
+                .trim();
     }
 
     public void close() {
         try {
             connected = false;
-            if (in != null) in.close();
-            if (out != null) out.close();
-            if (socket != null && !socket.isClosed()) socket.close();
+            sessionToken = null;
+
+            if (in != null) {
+                in.close();
+                in = null;
+            }
+
+            if (out != null) {
+                out.close();
+                out = null;
+            }
+
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+
+            socket = null;
+
         } catch (Exception ignored) {
         }
     }
