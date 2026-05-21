@@ -27,7 +27,6 @@ public class UserCertificateDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     UserCertificateInfo cert = new UserCertificateInfo();
-
                     cert.setId(rs.getInt("id"));
                     cert.setUserId(rs.getInt("user_id"));
                     cert.setEmail(rs.getString("email"));
@@ -37,18 +36,22 @@ public class UserCertificateDAO {
                     cert.setCertificatePath(rs.getString("certificate_path"));
                     cert.setStatus(rs.getString("status"));
 
+                    // ✅ expires_at en DATETIME
                     if (rs.getTimestamp("expires_at") != null) {
-                        cert.setExpiresAt(rs.getTimestamp("expires_at").toLocalDateTime());
+                        cert.setExpiresAt(rs.getTimestamp("expires_at")
+                                .toLocalDateTime());
                     }
+
+                    // ⭐ mot de passe chiffré
+                    cert.setKeystorePasswordEncrypted(
+                            rs.getString("keystore_password_encrypted"));
 
                     return cert;
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -63,11 +66,9 @@ public class UserCertificateDAO {
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setString(1, reason);
             ps.setInt(2, certId);
             ps.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

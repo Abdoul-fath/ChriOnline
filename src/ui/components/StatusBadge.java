@@ -1,8 +1,10 @@
+// ── StatusBadge.java ──
 package ui.components;
 
 import ui.theme.UITheme;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class StatusBadge extends JLabel {
@@ -12,37 +14,37 @@ public class StatusBadge extends JLabel {
         setOpaque(true);
         setBackground(bgColor);
         setForeground(fgColor);
-        setFont(UITheme.FONT_SMALL_BOLD);
-        setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        setFont(new Font("Segoe UI", Font.BOLD, 10));
+        setBorder(new EmptyBorder(3, 10, 3, 10));
     }
 
     public static StatusBadge forOrderStatus(String status) {
-        String normalized = status == null ? "" : status.trim().toLowerCase();
-
-        return switch (normalized) {
-            case "paid" -> new StatusBadge("PAID", new Color(32, 86, 56), Color.WHITE);
-            case "pending" -> new StatusBadge("PENDING", new Color(117, 86, 20), Color.WHITE);
-            case "shipped" -> new StatusBadge("SHIPPED", new Color(27, 74, 122), Color.WHITE);
-            case "delivered" -> new StatusBadge("DELIVERED", new Color(46, 125, 50), Color.WHITE);
-            case "cancelled" -> new StatusBadge("CANCELLED", new Color(130, 38, 50), Color.WHITE);
-            default -> new StatusBadge(status == null ? "UNKNOWN" : status.toUpperCase(), UITheme.CARD_BG_ALT, UITheme.TEXT_PRIMARY);
+        String s = status == null ? "" : status.trim().toLowerCase();
+        return switch (s) {
+            case "paid"      -> new StatusBadge("PAYÉ",      new Color(20, 83, 45),  new Color(134, 239, 172));
+            case "pending"   -> new StatusBadge("EN ATTENTE",new Color(78, 50, 0),   new Color(253, 186, 116));
+            case "shipped"   -> new StatusBadge("EXPÉDIÉ",   new Color(12, 50, 80),  new Color(125, 211, 252));
+            case "delivered" -> new StatusBadge("LIVRÉ",     new Color(20, 83, 45),  new Color(134, 239, 172));
+            case "cancelled" -> new StatusBadge("ANNULÉ",    new Color(69, 10, 10),  new Color(252, 165, 165));
+            default          -> new StatusBadge(status == null ? "N/A" : status.toUpperCase(),
+                                                UITheme.CARD_BG_ALT, UITheme.TEXT_PRIMARY);
         };
     }
 
     public static StatusBadge forLevel(String level) {
-        String normalized = level == null ? "" : level.trim().toUpperCase();
-
-        return switch (normalized) {
-            case "CRITICAL" -> new StatusBadge("CRITICAL", new Color(130, 38, 50), Color.WHITE);
-            case "WARNING" -> new StatusBadge("WARNING", new Color(117, 86, 20), Color.WHITE);
-            case "INFO" -> new StatusBadge("INFO", new Color(27, 74, 122), Color.WHITE);
-            default -> new StatusBadge(level == null ? "N/A" : level, UITheme.CARD_BG_ALT, UITheme.TEXT_PRIMARY);
+        String s = level == null ? "" : level.trim().toUpperCase();
+        return switch (s) {
+            case "CRITICAL" -> new StatusBadge("CRITIQUE", new Color(69, 10, 10),  new Color(252, 165, 165));
+            case "WARNING"  -> new StatusBadge("ALERTE",   new Color(78, 50, 0),   new Color(253, 186, 116));
+            case "INFO"     -> new StatusBadge("INFO",     new Color(12, 50, 80),  new Color(125, 211, 252));
+            default         -> new StatusBadge(level == null ? "N/A" : level,
+                                               UITheme.CARD_BG_ALT, UITheme.TEXT_PRIMARY);
         };
     }
 
     public static StatusBadge forBoolean(boolean value, String trueText, String falseText) {
         return value
-                ? new StatusBadge(trueText, new Color(32, 86, 56), Color.WHITE)
-                : new StatusBadge(falseText, new Color(130, 38, 50), Color.WHITE);
+                ? new StatusBadge(trueText,  new Color(20, 83, 45), new Color(134, 239, 172))
+                : new StatusBadge(falseText, new Color(69, 10, 10), new Color(252, 165, 165));
     }
 }

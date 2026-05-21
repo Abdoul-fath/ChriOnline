@@ -3,14 +3,19 @@ package ui.components;
 import ui.theme.UITheme;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+// ── ConfirmDialog ──────────────────────────────────────────────
 public final class ConfirmDialog {
-
     private ConfirmDialog() {}
 
     public static boolean show(Component parent, String title, String message) {
         UITheme.applyGlobalOptionPaneTheme();
+
+        JPanel panel = new JPanel(new BorderLayout(0, 8));
+        panel.setBackground(UITheme.CARD_BG);
+        panel.setBorder(new EmptyBorder(4, 4, 4, 4));
 
         JTextArea area = new JTextArea(message == null ? "" : message);
         area.setEditable(false);
@@ -20,18 +25,14 @@ public final class ConfirmDialog {
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
 
-        JPanel panel = new JPanel(new BorderLayout(8, 8));
-        panel.setBackground(UITheme.CARD_BG);
         panel.add(area, BorderLayout.CENTER);
 
         int result = JOptionPane.showConfirmDialog(
-                parent,
-                panel,
+                parent, panel,
                 title == null ? "Confirmation" : title,
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE
         );
-
         return result == JOptionPane.YES_OPTION;
     }
 }

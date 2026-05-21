@@ -12,6 +12,7 @@ public class UserCertificateInfo {
     private String certificatePath;
     private String status;
     private LocalDateTime expiresAt;
+    private String keystorePasswordEncrypted; // ⭐ nouveau
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -39,6 +40,18 @@ public class UserCertificateInfo {
 
     public LocalDateTime getExpiresAt() { return expiresAt; }
     public void setExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
+
+    public String getKeystorePasswordEncrypted() { return keystorePasswordEncrypted; }
+    public void setKeystorePasswordEncrypted(String keystorePasswordEncrypted) {
+        this.keystorePasswordEncrypted = keystorePasswordEncrypted;
+    }
+
+    // ⭐ Déchiffre et retourne le mot de passe en clair
+    public String getKeystorePassword() throws Exception {
+        if (keystorePasswordEncrypted == null || keystorePasswordEncrypted.isBlank())
+            return null;
+        return security.KeystorePasswordManager.decrypt(keystorePasswordEncrypted);
+    }
 
     public boolean isActiveAndValid() {
         return "active".equalsIgnoreCase(status)

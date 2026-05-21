@@ -13,7 +13,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.YearMonth;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class CardPaymentDialog extends JDialog {
+
+    private static final Logger logger = LogManager.getLogger(CardPaymentDialog.class);
+    private static final Logger paymentLogger = LogManager.getLogger("com.chrionline.payment");
 
     private JTextField cardNumberField;
     private JTextField expiryField;
@@ -22,18 +28,51 @@ public class CardPaymentDialog extends JDialog {
     private JButton payBtn;
     private JButton cancelBtn;
     private JLabel eyeLabel;
+    private JCheckBox saveCardCheckbox;
 
     private boolean paymentConfirmed = false;
     private boolean cvvVisible = false;
+    private boolean withSaveOption = false;
+    private CardSaveCallback saveCallback = null;
 
+    // Interface de callback pour enregistrer la carte
+    public interface CardSaveCallback {
+        void onCardSaved(CardInfo cardInfo);
+    }
+
+    // Classe pour passer les infos de la carte
+    public static class CardInfo {
+        public String last4;
+        public String brand;
+        public String cardHolder;
+        public int expiryMonth;
+        public int expiryYear;
+        
+        public CardInfo(String last4, String brand, String cardHolder, int expiryMonth, int expiryYear) {
+            this.last4 = last4;
+            this.brand = brand;
+            this.cardHolder = cardHolder;
+            this.expiryMonth = expiryMonth;
+            this.expiryYear = expiryYear;
+        }
+    }
+
+    // Constructeur pour paiement normal (sans enregistrement)
     public CardPaymentDialog(JFrame parent, double amount) {
+        this(parent, amount, false, null);
+    }
+
+    // Constructeur complet avec option d'enregistrement
+    public CardPaymentDialog(JFrame parent, double amount, boolean withSaveOption, CardSaveCallback callback) {
         super(parent, "💳 Paiement par carte bancaire", true);
+        this.withSaveOption = withSaveOption;
+        this.saveCallback = callback;
         initUI(amount);
         setLocationRelativeTo(parent);
     }
 
     private void initUI(double amount) {
-        setSize(480, 560);
+        setSize(480, 620);
         setResizable(false);
 
         JPanel root = UITheme.darkPanel();
@@ -158,21 +197,19 @@ public class CardPaymentDialog extends JDialog {
                 new EmptyBorder(10, 8, 10, 8)
         ));
         
-        // Formatage automatique MM/AA (corrigé)
+        // Formatage automatique MM/AA
         ((AbstractDocument) expiryField.getDocument()).setDocumentFilter(new DocumentFilter() {
             @Override
             public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
                 String current = fb.getDocument().getText(0, fb.getDocument().getLength());
                 String newString = current.substring(0, offset) + text + current.substring(offset);
                 
-                // Nettoyer les slashs existants
                 String cleanString = newString.replace("/", "");
                 
                 if (cleanString.length() > 4) {
                     return;
                 }
                 
-                // Construire la version formatée
                 StringBuilder formatted = new StringBuilder();
                 for (int i = 0; i < cleanString.length(); i++) {
                     if (i == 2 && cleanString.length() > 2) {
@@ -190,14 +227,12 @@ public class CardPaymentDialog extends JDialog {
                 String current = fb.getDocument().getText(0, fb.getDocument().getLength());
                 String newString = current.substring(0, offset) + text + current.substring(offset + length);
                 
-                // Nettoyer les slashs existants
                 String cleanString = newString.replace("/", "");
                 
                 if (cleanString.length() > 4) {
                     return;
                 }
                 
-                // Construire la version formatée
                 StringBuilder formatted = new StringBuilder();
                 for (int i = 0; i < cleanString.length(); i++) {
                     if (i == 2 && cleanString.length() > 2) {
@@ -230,7 +265,6 @@ public class CardPaymentDialog extends JDialog {
         cvvLabel.setForeground(UITheme.MUTED);
         cvvLabel.setFont(new Font("SansSerif", Font.PLAIN, 11));
         
-        // Panel pour le champ CVV + œil
         JPanel cvvFieldPanel = new JPanel(new BorderLayout());
         cvvFieldPanel.setOpaque(false);
         cvvFieldPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -247,7 +281,6 @@ public class CardPaymentDialog extends JDialog {
         cvvField.setBorder(BorderFactory.createEmptyBorder(10, 8, 10, 8));
         cvvField.setEchoChar('•');
         
-        // Œil pour voir/masquer
         eyeLabel = new JLabel("👁️");
         eyeLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         eyeLabel.setForeground(UITheme.MUTED);
@@ -313,6 +346,17 @@ public class CardPaymentDialog extends JDialog {
         gbc.gridy++;
         formPanel.add(cardHolderField, gbc);
 
+        // Checkbox pour enregistrer la carte
+        if (withSaveOption) {
+            saveCardCheckbox = new JCheckBox("💾 Enregistrer cette carte pour les prochains paiements");
+            saveCardCheckbox.setForeground(Color.WHITE);
+            saveCardCheckbox.setBackground(UITheme.CARD);
+            saveCardCheckbox.setOpaque(false);
+            saveCardCheckbox.setAlignmentX(Component.LEFT_ALIGNMENT);
+            gbc.gridy++;
+            formPanel.add(saveCardCheckbox, gbc);
+        }
+
         // Security note
         JLabel securityNote = new JLabel("🔒 Paiement 100% sécurisé - Transaction simulée");
         securityNote.setForeground(UITheme.SUCCESS);
@@ -340,6 +384,7 @@ public class CardPaymentDialog extends JDialog {
 
         payBtn.addActionListener(e -> validateAndPay());
         cancelBtn.addActionListener(e -> {
+            logger.debug("Paiement annulé par l'utilisateur");
             paymentConfirmed = false;
             dispose();
         });
@@ -371,16 +416,21 @@ public class CardPaymentDialog extends JDialog {
                 return false;
             }
             
-            // Vérifier que la date existe réellement
             int fullYear = 2000 + year;
             YearMonth yearMonth = YearMonth.of(fullYear, month);
-            
-            // Le mois est valide (ex: 31/02 sera refusé car février n'a que 28/29 jours)
-            // On vérifie juste que le mois existe
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private String detectCardBrand(String cardNumber) {
+        if (cardNumber == null || cardNumber.isEmpty()) return "CARTE";
+        String firstDigit = cardNumber.substring(0, 1);
+        if (firstDigit.equals("4")) return "VISA";
+        if (cardNumber.startsWith("5")) return "MASTERCARD";
+        if (cardNumber.startsWith("3")) return "AMEX";
+        return "CARTE";
     }
 
     private void validateAndPay() {
@@ -389,20 +439,22 @@ public class CardPaymentDialog extends JDialog {
         String expiry = expiryField.getText().trim();
         String cardHolder = cardHolderField.getText().trim();
 
-        // Validation du numéro de carte
+        paymentLogger.info("💳 Tentative de paiement par carte - Montant en cours");
+
         if (cardNumber.isEmpty() || cardNumber.length() < 13 || cardNumber.length() > 16) {
+            paymentLogger.warn("Numéro de carte invalide - Longueur: {}", cardNumber.length());
             showError("Numéro de carte invalide (13-16 chiffres)");
             return;
         }
 
-        // Validation du format MM/AA
         if (!expiry.matches("\\d{2}/\\d{2}")) {
+            paymentLogger.warn("Format date expiration invalide - Expiry: {}", expiry);
             showError("Format date invalide (MM/AA)\nExemple: 12/25");
             return;
         }
 
-        // Validation de la date réelle
         if (!isValidDate(expiry)) {
+            paymentLogger.warn("Date expiration invalide - Expiry: {}", expiry);
             showError("Date d'expiration invalide");
             return;
         }
@@ -416,23 +468,34 @@ public class CardPaymentDialog extends JDialog {
         int currentMonth = current.getMonthValue();
 
         if (year < currentYear || (year == currentYear && month < currentMonth)) {
+            paymentLogger.warn("Carte expirée - Expiry: {}/{}", month, year);
             showError("Carte expirée");
             return;
         }
 
-        // Validation CVV
         if (cvv.isEmpty() || cvv.length() < 3) {
+            paymentLogger.warn("CVV invalide - Longueur: {}", cvv.length());
             showError("CVV invalide (3 chiffres)");
             return;
         }
 
-        // Validation nom titulaire
         if (cardHolder.isEmpty()) {
+            paymentLogger.warn("Nom du titulaire manquant");
             showError("Nom du titulaire requis");
             return;
         }
 
-        // Simuler un délai de traitement
+        // Sauvegarder la carte si demandé
+        if (withSaveOption && saveCardCheckbox != null && saveCardCheckbox.isSelected() && saveCallback != null) {
+            String last4 = cardNumber.length() >= 4 ? cardNumber.substring(cardNumber.length() - 4) : cardNumber;
+            String brand = detectCardBrand(cardNumber);
+            CardInfo cardInfo = new CardInfo(last4, brand, cardHolder, month, year);
+            paymentLogger.info("💾 Demande d'enregistrement de carte - Marque: {}, Last4: {}", brand, last4);
+            saveCallback.onCardSaved(cardInfo);
+        }
+
+        paymentLogger.info("✅ Paiement par carte validé - Marque: {}", detectCardBrand(cardNumber));
+        
         payBtn.setEnabled(false);
         payBtn.setText("⏳ Traitement en cours...");
 
@@ -445,6 +508,7 @@ public class CardPaymentDialog extends JDialog {
     }
 
     private void showError(String message) {
+        paymentLogger.error("❌ Erreur paiement carte: {}", message);
         JOptionPane.showMessageDialog(this, message, "Erreur de paiement", JOptionPane.ERROR_MESSAGE);
     }
 

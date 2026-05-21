@@ -20,95 +20,130 @@ public class OtpFrame extends JFrame {
 
     public OtpFrame(ClientSocketService clientService, String email, JFrame backFrame) {
         this.clientService = clientService;
-        this.email = email;
-        this.backFrame = backFrame;
+        this.email         = email;
+        this.backFrame     = backFrame;
         initUI();
         startCountdown();
     }
 
     private void initUI() {
-        setTitle("ChriOnline - Vérification Email");
-        setSize(760, 500);
+        setTitle("ChriOnline — Vérification Email");
+        setSize(620, 520);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
 
-        JPanel root = UITheme.darkPanel();
-        root.setLayout(new GridBagLayout());
+        JPanel root = new JPanel(new GridBagLayout()) {
+            @Override protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setPaint(new GradientPaint(0, 0, new Color(13, 17, 27), getWidth(), getHeight(), new Color(18, 26, 44)));
+                g2.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        root.setBackground(UITheme.BG);
 
-        JPanel card = UITheme.cardPanel();
-        card.setPreferredSize(new Dimension(460, 360));
+        JPanel card = new JPanel() {
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(UITheme.CARD);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
+                g2.setColor(UITheme.BORDER);
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 18, 18);
+                g2.dispose();
+            }
+        };
+        card.setOpaque(false);
+        card.setPreferredSize(new Dimension(420, 420));
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UITheme.BORDER),
-                new EmptyBorder(28, 36, 28, 36)
-        ));
+        card.setBorder(new EmptyBorder(36, 44, 36, 44));
 
+        // Icône email animée
         JLabel icon = new JLabel("📧");
         icon.setAlignmentX(Component.CENTER_ALIGNMENT);
-        icon.setFont(new Font("SansSerif", Font.PLAIN, 38));
+        icon.setFont(new Font("SansSerif", Font.PLAIN, 46));
 
         JLabel title = new JLabel("Vérification Email");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setForeground(Color.WHITE);
-        title.setFont(UITheme.titleFont());
+        title.setForeground(UITheme.TEXT);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
 
         JLabel subtitle = new JLabel("Code envoyé à : " + email);
         subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         subtitle.setForeground(UITheme.MUTED);
-        subtitle.setFont(UITheme.smallFont());
+        subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-        timerLabel = new JLabel("Expire dans : 10:00");
+        // Timer badge
+        timerLabel = new JLabel("10:00");
         timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        timerLabel.setForeground(new Color(100, 200, 100));
-        timerLabel.setFont(UITheme.smallFont());
+        timerLabel.setForeground(UITheme.GREEN);
+        timerLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        timerLabel.setOpaque(true);
+        timerLabel.setBackground(new Color(20, 50, 30));
+        timerLabel.setBorder(new EmptyBorder(4, 16, 4, 16));
 
-        otpField = UITheme.textField();
-        otpField.setMaximumSize(new Dimension(340, 56));
-        otpField.setPreferredSize(new Dimension(340, 56));
-        otpField.setBackground(new Color(58, 62, 74));
-        otpField.setForeground(Color.WHITE);
-        otpField.setCaretColor(Color.WHITE);
-        otpField.setFont(new Font("SansSerif", Font.BOLD, 24));
+        // OTP Field — grand et centré
+        otpField = new JTextField();
+        otpField.setBackground(UITheme.INPUT_BG);
+        otpField.setForeground(UITheme.GOLD);
+        otpField.setCaretColor(UITheme.GOLD);
+        otpField.setFont(new Font("Segoe UI", Font.BOLD, 30));
         otpField.setHorizontalAlignment(JTextField.CENTER);
-        otpField.setBorder(UITheme.titledBorder("Code à 6 chiffres"));
+        otpField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UITheme.BORDER, 1, true),
+                new EmptyBorder(12, 20, 12, 20)
+        ));
+        otpField.setMaximumSize(new Dimension(332, 62));
+        otpField.setPreferredSize(new Dimension(332, 62));
+        otpField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        otpField.putClientProperty("JTextField.placeholderText", "• • • • • •");
 
+        // Status
         statusLabel = new JLabel(" ");
         statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        statusLabel.setForeground(new Color(255, 120, 120));
-        statusLabel.setFont(UITheme.smallFont());
+        statusLabel.setForeground(UITheme.RED);
+        statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-        JButton verifyBtn = UITheme.primaryButton("Vérifier");
+        // Boutons
+        JButton verifyBtn = UITheme.primaryButton("Vérifier le code");
         verifyBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        verifyBtn.setMaximumSize(new Dimension(340, 48));
-        verifyBtn.setPreferredSize(new Dimension(340, 48));
+        verifyBtn.setMaximumSize(new Dimension(332, 46));
+        verifyBtn.setPreferredSize(new Dimension(332, 46));
 
         JButton resendBtn = UITheme.blueButton("Renvoyer le code");
         resendBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        resendBtn.setMaximumSize(new Dimension(340, 42));
-        resendBtn.setPreferredSize(new Dimension(340, 42));
+        resendBtn.setMaximumSize(new Dimension(332, 40));
+        resendBtn.setPreferredSize(new Dimension(332, 40));
 
-        JButton backBtn = UITheme.blueButton("← Retour au login");
+        JButton backBtn = new JButton("← Retour au login");
         backBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        backBtn.setMaximumSize(new Dimension(340, 42));
-        backBtn.setPreferredSize(new Dimension(340, 42));
+        backBtn.setMaximumSize(new Dimension(332, 36));
+        backBtn.setBackground(new Color(30, 40, 58));
+        backBtn.setForeground(UITheme.MUTED);
+        backBtn.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        backBtn.setFocusPainted(false);
+        backBtn.setBorderPainted(false);
+        backBtn.setOpaque(true);
+        backBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        backBtn.setBorder(new EmptyBorder(8, 14, 8, 14));
 
         card.add(icon);
         card.add(Box.createVerticalStrut(10));
         card.add(title);
-        card.add(Box.createVerticalStrut(8));
-        card.add(subtitle);
         card.add(Box.createVerticalStrut(6));
+        card.add(subtitle);
+        card.add(Box.createVerticalStrut(14));
         card.add(timerLabel);
-        card.add(Box.createVerticalStrut(18));
+        card.add(Box.createVerticalStrut(20));
         card.add(otpField);
         card.add(Box.createVerticalStrut(10));
         card.add(statusLabel);
-        card.add(Box.createVerticalStrut(14));
+        card.add(Box.createVerticalStrut(16));
         card.add(verifyBtn);
         card.add(Box.createVerticalStrut(10));
         card.add(resendBtn);
-        card.add(Box.createVerticalStrut(10));
+        card.add(Box.createVerticalStrut(8));
         card.add(backBtn);
 
         root.add(card);
@@ -116,62 +151,48 @@ public class OtpFrame extends JFrame {
 
         verifyBtn.addActionListener(e -> verifyCode());
         resendBtn.addActionListener(e -> resendCode());
+        otpField.addActionListener(e -> verifyCode());
         backBtn.addActionListener(e -> {
             if (countdownTimer != null) countdownTimer.stop();
             backFrame.setVisible(true);
             dispose();
         });
-
-        otpField.addActionListener(e -> verifyCode());
     }
 
     private void verifyCode() {
         String code = otpField.getText().trim();
-
         if (code.isEmpty() || code.length() != 6) {
+            statusLabel.setForeground(UITheme.RED);
             statusLabel.setText("Entrez le code à 6 chiffres.");
             return;
         }
-
-        if (!clientService.connect()) {
-            statusLabel.setText("Serveur inaccessible.");
-            return;
-        }
-
+        if (!clientService.connect()) { statusLabel.setText("Serveur inaccessible."); return; }
         String response = clientService.verifyOtp(email, code);
-
         if ("OTP_VERIFIED".equals(response)) {
             if (countdownTimer != null) countdownTimer.stop();
-
             JOptionPane.showMessageDialog(this,
-                    "Email vérifié ! Vous pouvez maintenant vous connecter.",
-                    "Succès",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            LoginFrame loginFrame = new LoginFrame(clientService);
-            loginFrame.setVisible(true);
+                    "Email vérifié ! Vous pouvez vous connecter.",
+                    "Succès", JOptionPane.INFORMATION_MESSAGE);
+            new LoginFrame(clientService).setVisible(true);
             dispose();
         } else {
-            statusLabel.setText("Code incorrect ou expiré. Réessayez.");
+            statusLabel.setForeground(UITheme.RED);
+            statusLabel.setText("Code incorrect ou expiré.");
             otpField.setText("");
         }
     }
 
     private void resendCode() {
-        if (!clientService.connect()) {
-            statusLabel.setText("Serveur inaccessible.");
-            return;
-        }
-
+        if (!clientService.connect()) { statusLabel.setText("Serveur inaccessible."); return; }
         String response = clientService.sendOtp(email);
-
         if ("OTP_SENT".equals(response)) {
-            statusLabel.setForeground(new Color(100, 200, 100));
+            statusLabel.setForeground(UITheme.GREEN);
             statusLabel.setText("Nouveau code envoyé !");
             secondsLeft = 600;
-            timerLabel.setForeground(new Color(100, 200, 100));
+            timerLabel.setForeground(UITheme.GREEN);
+            timerLabel.setBackground(new Color(20, 50, 30));
         } else {
-            statusLabel.setForeground(new Color(255, 120, 120));
+            statusLabel.setForeground(UITheme.RED);
             statusLabel.setText("Erreur envoi. Réessayez.");
         }
     }
@@ -179,22 +200,19 @@ public class OtpFrame extends JFrame {
     private void startCountdown() {
         countdownTimer = new Timer(1000, e -> {
             secondsLeft--;
-
-            int minutes = secondsLeft / 60;
-            int seconds = secondsLeft % 60;
-            timerLabel.setText(String.format("Expire dans : %02d:%02d", minutes, seconds));
-
+            int min = secondsLeft / 60, sec = secondsLeft % 60;
+            timerLabel.setText(String.format("%02d:%02d", min, sec));
             if (secondsLeft <= 60) {
-                timerLabel.setForeground(new Color(255, 120, 120));
+                timerLabel.setForeground(UITheme.RED);
+                timerLabel.setBackground(new Color(50, 10, 10));
             }
-
             if (secondsLeft <= 0) {
                 countdownTimer.stop();
-                timerLabel.setText("Code expiré !");
+                timerLabel.setText("Expiré");
+                statusLabel.setForeground(UITheme.RED);
                 statusLabel.setText("Code expiré — cliquez sur Renvoyer.");
             }
         });
-
         countdownTimer.start();
     }
 }

@@ -3,7 +3,10 @@ package ui.components;
 import ui.theme.UITheme;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class SearchBarPanel extends JPanel {
 
@@ -12,7 +15,7 @@ public class SearchBarPanel extends JPanel {
         void onReset();
     }
 
-    private final JTextField searchField = UITheme.styledTextField(22);
+    private final JTextField searchField;
 
     public SearchBarPanel(String labelText, SearchListener listener) {
         setLayout(new FlowLayout(FlowLayout.LEFT, 8, 0));
@@ -22,37 +25,34 @@ public class SearchBarPanel extends JPanel {
         label.setForeground(UITheme.TEXT_SECONDARY);
         label.setFont(UITheme.FONT_BODY);
 
-        JButton searchButton = UITheme.primaryButton("Rechercher");
-        JButton resetButton = UITheme.secondaryButton("Reset");
+        searchField = new JTextField(22);
+        UITheme.styleTextField(searchField);
+        searchField.putClientProperty("JTextField.placeholderText", "Rechercher...");
 
-        searchButton.addActionListener(e -> {
-            if (listener != null) {
-                listener.onSearch(searchField.getText().trim());
-            }
+        JButton searchBtn = UITheme.primaryButton("Rechercher");
+        JButton resetBtn  = UITheme.secondaryButton("Reset");
+
+        searchBtn.addActionListener(e -> { if (listener != null) listener.onSearch(searchField.getText().trim()); });
+        resetBtn.addActionListener(e -> {
+            searchField.setText("");
+            if (listener != null) listener.onReset();
         });
 
-        resetButton.addActionListener(e -> {
-            searchField.setText("");
-            if (listener != null) {
-                listener.onReset();
+        // Enter key support
+        searchField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && listener != null)
+                    listener.onSearch(searchField.getText().trim());
             }
         });
 
         add(label);
         add(searchField);
-        add(searchButton);
-        add(resetButton);
+        add(searchBtn);
+        add(resetBtn);
     }
 
-    public JTextField getSearchField() {
-        return searchField;
-    }
-
-    public String getValue() {
-        return searchField.getText().trim();
-    }
-
-    public void clear() {
-        searchField.setText("");
-    }
+    public JTextField getSearchField() { return searchField; }
+    public String getValue()           { return searchField.getText().trim(); }
+    public void clear()                { searchField.setText(""); }
 }

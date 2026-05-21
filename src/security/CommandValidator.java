@@ -17,6 +17,7 @@ public class CommandValidator {
             "GET_PROFILE_BY_EMAIL",
             "ADMIN_AUTH_REQUEST",
             "ADMIN_CHALLENGE_RESPONSE",
+            "GET_KEYSTORE_PASSWORD",
             "GET_CATEGORIES",
             "GET_PRODUCTS",
             "GET_PRODUCT",
@@ -48,14 +49,25 @@ public class CommandValidator {
     );
 
     public static boolean isValidRequest(String request) {
-        if (request == null || request.isBlank()) {
-            return false;
+        if (request == null || request.isBlank()) return false;
+        if (request.length() > MAX_REQUEST_LENGTH) return false;
+
+        // ⭐ Requête avec token : "TOKEN:xxxxx:COMMANDE:...params..."
+        if (request.startsWith("TOKEN:")) {
+            // Extraire la commande après "TOKEN:xxxxx:"
+            int firstColon  = request.indexOf(":", 6); // fin du token
+            if (firstColon < 0) return false;
+
+            String rest     = request.substring(firstColon + 1); // "COMMANDE:...params..."
+            int secondColon = rest.indexOf(":");
+            String command  = secondColon > 0
+                    ? rest.substring(0, secondColon)
+                    : rest;
+
+            return ALLOWED_COMMANDS.contains(command);
         }
 
-        if (request.length() > MAX_REQUEST_LENGTH) {
-            return false;
-        }
-
+        // Requête publique normale
         String command = request.contains(":")
                 ? request.substring(0, request.indexOf(":"))
                 : request;
@@ -65,7 +77,6 @@ public class CommandValidator {
 
     public static String clean(String value) {
         if (value == null) return "";
-
         return value
                 .replace(";", ",")
                 .replace("|", "/")
