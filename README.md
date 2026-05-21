@@ -151,8 +151,7 @@ Exécuter : ui/MainUI.java
 
 ## 👨‍💻 Auteur
 
-**Abdoulfatah Hisoua**
-- 🎓 Étudiant en Génie Informatique — ENSAT
+**Abdoulfatah **
 - 💼 [LinkedIn](https://www.linkedin.com/in/abdoulfatah-omar-hassan-a777a8338/)
 
 ---
