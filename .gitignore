@@ -1,0 +1,29 @@
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# Logs
+logs/
+*.log
+
+# KEYS - CRITICAL - NEVER COMMIT
+keys/
+*.p12
+*.jks
+*.cer
+*.key
+*.crt
+
+# Images uploadées
+image/prod_*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.swp
+*~
